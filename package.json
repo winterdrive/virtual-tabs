@@ -1,0 +1,197 @@
+{
+    "name": "virtual-tabs",
+    "displayName": "VirtualTabs",
+    "description": "Group open tabs and files in a sidebar view, making it easier to add files with GitHub Copilot",
+    "version": "0.0.1",
+    "publisher": "winterdrive",
+    "icon": "images/icon.png",
+    "categories": ["Other"],
+    "keywords": ["tabs", "group", "sidebar", "productivity", "virtual tabs"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/winterdrive/virtual-tabs"
+    },
+    "bugs": {
+        "url": "https://github.com/winterdrive/virtual-tabs/issues"
+    },
+    "homepage": "https://github.com/winterdrive/virtual-tabs",
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.70.0"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "views": {
+            "explorer": [
+                {
+                    "id": "virtualTabsView",
+                    "name": "Virtual Tabs",
+                    "canSelectMany": true,
+                    "icon": "images/icon.png"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "virtualTabs.addGroup",
+                "title": "新增分群"
+            },
+            {
+                "command": "virtualTabs.removeGroup",
+                "title": "刪除群組"
+            },
+            {
+                "command": "virtualTabs.autoGroupByExt",
+                "title": "自動依副檔名分群"
+            },
+            {
+                "command": "virtualTabs.openAllFiles",
+                "title": "全部開啟群組檔案"
+            },
+            {
+                "command": "virtualTabs.closeAllFiles",
+                "title": "全部關閉群組檔案"
+            },
+            {
+                "command": "copyFilePath",
+                "title": "複製檔案路徑"
+            },
+            {
+                "command": "revealFileInOS",
+                "title": "在檔案總管顯示"
+            },
+            {
+                "command": "deleteFile",
+                "title": "刪除檔案"
+            },
+            {
+                "command": "virtualTabs.duplicateGroup",
+                "title": "複製群組"
+            },
+            {
+                "command": "virtualTabs.renameGroup",
+                "title": "重命名群組"
+            },
+            {
+                "command": "virtualTabs.duplicateBuiltInGroup",
+                "title": "複製群組（目前已開啟檔案）"
+            },
+            {
+                "command": "virtualTabs.refreshBuiltInGroup",
+                "title": "重新整理"
+            },
+            {
+                "command": "virtualTabs.addSelectedFilesToGroup",
+                "title": "加入選取的檔案到群組"
+            },
+            {
+                "command": "virtualTabs.openSelectedFiles",
+                "title": "開啟選取的檔案"
+            },
+            {
+                "command": "virtualTabs.closeSelectedFiles",
+                "title": "關閉選取的檔案"
+            },
+            {
+                "command": "virtualTabs.removeSelectedFilesFromGroup",
+                "title": "從群組移除選取的檔案"
+            }
+        ],
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "virtualTabs.addGroup",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "virtualTabs.removeGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "inline@99",
+                    "icon": "$(trash)"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByExt",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "virtualTabs.openAllFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "virtualTabs.closeAllFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@4"
+                },
+                {
+                    "command": "virtualTabs.duplicateGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@5"
+                },
+                {
+                    "command": "virtualTabs.renameGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@6"
+                },
+                {
+                    "command": "virtualTabs.duplicateBuiltInGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "navigation@7"
+                },
+                {
+                    "command": "virtualTabs.refreshBuiltInGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "inline@99",
+                    "icon": "$(refresh)"
+                },
+                {
+                    "command": "copyFilePath",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "revealFileInOS",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "deleteFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount <= 1",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "virtualTabs.openSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "virtualTabs.closeSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "virtualTabs.removeSelectedFilesFromGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "virtualTabs.addSelectedFilesToGroup",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn) && selectedCount > 0",
+                    "group": "navigation@1"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.100.0",
+        "typescript": "^4.0.0"
+    }
+}
