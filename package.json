@@ -5,8 +5,16 @@
     "version": "0.0.1",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
-    "categories": ["Other"],
-    "keywords": ["tabs", "group", "sidebar", "productivity", "virtual tabs"],
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "tabs",
+        "group",
+        "sidebar",
+        "productivity",
+        "virtual tabs"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/winterdrive/virtual-tabs"
@@ -20,7 +28,23 @@
         "vscode": "^1.70.0"
     },
     "activationEvents": [
-        "*"
+        "onView:virtualTabsView",
+        "onCommand:virtualTabs.addGroup",
+        "onCommand:virtualTabs.removeGroup",
+        "onCommand:virtualTabs.autoGroupByExt",
+        "onCommand:virtualTabs.openAllFiles",
+        "onCommand:virtualTabs.closeAllFiles",
+        "onCommand:virtualTabs.duplicateGroup",
+        "onCommand:virtualTabs.renameGroup",
+        "onCommand:virtualTabs.duplicateBuiltInGroup",
+        "onCommand:virtualTabs.refreshBuiltInGroup",
+        "onCommand:virtualTabs.addSelectedFilesToGroup",
+        "onCommand:virtualTabs.openSelectedFiles",
+        "onCommand:virtualTabs.closeSelectedFiles",
+        "onCommand:virtualTabs.removeSelectedFilesFromGroup",
+        "onCommand:copyFilePath",
+        "onCommand:revealFileInOS",
+        "onCommand:deleteFile"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -191,7 +215,7 @@
         "vscode:prepublish": "tsc -p ./"
     },
     "devDependencies": {
-        "@types/vscode": "^1.100.0",
+        "@types/vscode": "^1.70.0",
         "typescript": "^4.0.0"
     }
 }
