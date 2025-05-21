@@ -4,7 +4,7 @@
     "description": "Group open tabs and files in a sidebar view, making it easier to add files with GitHub Copilot",
     "version": "0.0.1",
     "publisher": "winterdrive",
-    "icon": "images/icon.png",
+    "icon": "assets/virtualtabs_icon_128.png",
     "categories": ["Other"],
     "keywords": ["tabs", "group", "sidebar", "productivity", "virtual tabs"],
     "repository": {
@@ -30,7 +30,7 @@
                     "id": "virtualTabsView",
                     "name": "Virtual Tabs",
                     "canSelectMany": true,
-                    "icon": "images/icon.png"
+                    "icon": "assets/virtualtabs_icon.svg"
                 }
             ]
         },

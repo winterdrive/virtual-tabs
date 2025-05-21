@@ -20,7 +20,7 @@
 
 ### UI 範例圖
 
-> ![功能截圖](assests/demo.png)
+> ![功能截圖](assets/demo.png)
 
 ---
 
