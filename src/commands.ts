@@ -163,6 +163,21 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         provider.addMultipleFilesToGroup(item.groupIdx, selectedItems);
     }));
     
+    // 複製檔名指令
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.copyFileName', async (item: TempFileItem) => {
+        if (!(item instanceof TempFileItem)) return;
+        const path = require('path');
+        const fileName = path.basename(item.uri.fsPath);
+        await vscode.env.clipboard.writeText(fileName);
+    }));
+
+    // 複製相對路徑指令
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.copyRelativePath', async (item: TempFileItem) => {
+        if (!(item instanceof TempFileItem)) return;
+        const relativePath = vscode.workspace.asRelativePath(item.uri);
+        await vscode.env.clipboard.writeText(relativePath);
+    }));
+
     // 加入輔助函數，協助找出檔案所屬群組
     function findGroupIdxForUri(provider: TempFoldersProvider, uriString: string): number {
         for (let i = 0; i < provider.groups.length; i++) {

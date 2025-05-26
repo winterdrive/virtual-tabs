@@ -32,6 +32,5 @@ export class TempFoldersDragAndDropController implements vscode.TreeDragAndDropC
         // 修正：同時支援 \n、\r\n 並去除每個 URI 的首尾空白與控制字元
         const uris = uriList.value.split(/\r?\n/).map((s: string) => s.trim()).filter(Boolean);
         this.provider.addFilesToGroup(target.groupIdx, uris);
-        vscode.window.showInformationMessage(`已將檔案加入群組「${target.label}」 (VirtualTabs)`);
     }
 }
