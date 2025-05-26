@@ -90,9 +90,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             group.name = newName;
             provider.refresh();
         }
-    }));    
-
-    // 檔案右鍵「刪除」改為從群組移除
+    }));        // 檔案右鍵「刪除」改為從群組移除
     context.subscriptions.push(vscode.commands.registerCommand('deleteFile', (item: TempFileItem, selectedItems?: TempFileItem[]) => {
         // 處理來自瀏覽器或資源管理器的呼叫，轉發給原始命令
         if (!(item instanceof TempFileItem)) {
@@ -104,18 +102,12 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         const allSelectedItems = provider.getSelectedFileItems();
         if (allSelectedItems.length > 1) {
             // 有多選檔案，執行多選移除
-            const groupIdx = findGroupIdxForUri(provider, item.uri.toString());
-            if (groupIdx === -1) return;
-            provider.removeFilesFromGroup(groupIdx, allSelectedItems);
+            provider.removeFilesFromGroup(item.groupIdx, allSelectedItems);
             return;
         }
 
         // 單選檔案的處理方式
-        const groupIdx = findGroupIdxForUri(provider, item.uri.toString());
-        if (groupIdx === -1) return;
-
-        // 從群組移除此檔案
-        const group = provider.groups[groupIdx];
+        const group = provider.groups[item.groupIdx];
         if (!group || !group.files) return;
 
         group.files = group.files.filter(uri => uri !== item.uri.toString());
@@ -137,8 +129,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         
         await provider.closeSelectedFiles(selectedItems);
     }));
-      
-    // 處理多選檔案移除
+        // 處理多選檔案移除
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeSelectedFilesFromGroup', (item: TempFileItem) => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
@@ -146,11 +137,8 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         // 如果沒有提供特定項目或項目不是 TempFileItem，使用第一個選取的項目
         const fileItem = (item instanceof TempFileItem) ? item : selectedItems[0];
         
-        // 找出當前項目所屬的群組索引
-        const groupIdx = findGroupIdxForUri(provider, fileItem.uri.toString());
-        if (groupIdx === -1) return;
-        
-        provider.removeFilesFromGroup(groupIdx, selectedItems);
+        // 直接使用檔案項目的群組索引
+        provider.removeFilesFromGroup(fileItem.groupIdx, selectedItems);
     }));
     
     // 群組右鍵選單「加入選取的檔案」
@@ -169,25 +157,12 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         const path = require('path');
         const fileName = path.basename(item.uri.fsPath);
         await vscode.env.clipboard.writeText(fileName);
-    }));
-
-    // 複製相對路徑指令
+    }));    // 複製相對路徑指令
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.copyRelativePath', async (item: TempFileItem) => {
         if (!(item instanceof TempFileItem)) return;
         const relativePath = vscode.workspace.asRelativePath(item.uri);
         await vscode.env.clipboard.writeText(relativePath);
     }));
-
-    // 加入輔助函數，協助找出檔案所屬群組
-    function findGroupIdxForUri(provider: TempFoldersProvider, uriString: string): number {
-        for (let i = 0; i < provider.groups.length; i++) {
-            const group = provider.groups[i];
-            if (group.files && group.files.includes(uriString)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     // 內建群組複製
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.duplicateBuiltInGroup', (item: TempFolderItem) => {
@@ -217,5 +192,33 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         const group = provider.groups[item.groupIdx];
         if (!group || !group.builtIn) return;
         provider.refresh();
+    }));    // 從群組中移除單一檔案
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeFileFromGroup', (item: TempFileItem) => {
+        if (!(item instanceof TempFileItem)) return;
+        
+        // 直接使用檔案項目的群組索引，不需要再搜尋
+        const groupIdx = item.groupIdx;
+        const group = provider.groups[groupIdx];
+        
+        if (!group || !group.files) {
+            vscode.window.showErrorMessage('群組不存在或沒有檔案');
+            return;
+        }
+        
+        // 過濾掉要移除的檔案
+        const originalLength = group.files.length;
+        group.files = group.files.filter(uri => uri !== item.uri.toString());
+        
+        // 檢查是否真的移除了檔案
+        if (group.files.length === originalLength) {
+            vscode.window.showWarningMessage('檔案不在指定的群組中');
+            return;
+        }
+        
+        // 刷新 TreeView
+        provider.refresh();
+        
+        // 顯示移除成功訊息
+        vscode.window.showInformationMessage(`已從「${group.name}」群組移除檔案`);
     }));
 }

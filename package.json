@@ -75,10 +75,11 @@
             { "command": "virtualTabs.removeSelectedFilesFromGroup", "title": "從群組移除選取的檔案" },
             { "command": "deleteFile", "title": "刪除檔案" },
 
-            { "command": "copyFilePath", "title": "複製檔案路徑" },
+            { "command": "copyFilePath", "title": "複製絕對路徑" },
             { "command": "virtualTabs.copyFileName", "title": "複製檔名" },
             { "command": "virtualTabs.copyRelativePath", "title": "複製相對路徑" },
-            { "command": "revealFileInOS", "title": "在檔案總管顯示" }
+            { "command": "revealFileInOS", "title": "在檔案總管顯示" },
+            { "command": "virtualTabs.removeFileFromGroup", "title": "從群組中移除檔案" }
         ],
         "menus": {
             "view/item/context": [
@@ -101,7 +102,8 @@
                 { "command": "virtualTabs.copyFileName", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@10" },
                 { "command": "virtualTabs.copyRelativePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@11" },
                 { "command": "copyFilePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@12" },
-                { "command": "revealFileInOS", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@13" }
+                { "command": "revealFileInOS", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@13" },
+                { "command": "virtualTabs.removeFileFromGroup", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "inline@100", "icon": "$(trash)" }
             ]
         }
     },

@@ -13,7 +13,7 @@ export class TempFolderItem extends vscode.TreeItem {
 
 // 分群內檔案 TreeItem，讓檔案點擊可直接開啟，並顯示檔案圖示與完整路徑 tooltip
 export class TempFileItem extends vscode.TreeItem {
-    constructor(public readonly uri: vscode.Uri) {
+    constructor(public readonly uri: vscode.Uri, public readonly groupIdx: number, isBuiltInGroup?: boolean) {
         super(uri, vscode.TreeItemCollapsibleState.None);
         this.resourceUri = uri;
         this.command = {
@@ -23,6 +23,7 @@ export class TempFileItem extends vscode.TreeItem {
         };
         this.iconPath = vscode.ThemeIcon.File;
         this.tooltip = uri.fsPath;
-        this.contextValue = 'virtualTabsFileCustom'; // 只顯示自訂右鍵選單
+        // 根據所屬群組類型設定不同的 contextValue
+        this.contextValue = isBuiltInGroup ? 'virtualTabsFileBuiltIn' : 'virtualTabsFileCustom';
     }
 }

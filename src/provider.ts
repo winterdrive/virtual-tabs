@@ -343,7 +343,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                 const ext = uri.fsPath.split('.').pop()?.toLowerCase() || 'other';
                 if (!extMap[ext]) extMap[ext] = [];
                 extMap[ext].push(uriStr);
-            } catch {}
+            } catch { }
         }
         // 移除舊的自動分群
         this.groups = this.groups.filter((g, idx) => g.builtIn || !g.auto || idx === groupIdx);
@@ -365,14 +365,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (!element) {
             // 顯示所有群組，帶入 groupIdx
             return this.groups.map((g, idx) => new TempFolderItem(g.name, idx, g.builtIn));
-        }
-        // 若是群組節點，顯示檔案
+        }        // 若是群組節點，顯示檔案
         if (element instanceof TempFolderItem) {
             const group = this.groups[element.groupIdx];
             if (group && group.files && group.files.length > 0) {
                 return group.files.map(uriStr => {
                     const uri = vscode.Uri.parse(uriStr);
-                    return new TempFileItem(uri);
+                    return new TempFileItem(uri, element.groupIdx, group.builtIn);
                 });
             }
         }

@@ -16,6 +16,7 @@
 * 🔄 **即時同步（僅限「目前已開啟檔案」群組）**：開啟、關閉檔案時「目前已開啟檔案」群組會自動更新。自訂群組需手動加入/移除檔案。
 * 🗂️ **自訂群組管理**：可新增、刪除、複製、重命名自訂群組。
 * 🖱️ **多選檔案操作**：支援多選檔案一鍵開啟、關閉、移除。
+* 🗑️ **單一檔案移除**：非內建群組的檔案可透過右鍵選單或垃圾桶圖示快速移除。
 * 🖱️ **拖曳檔案至群組**：可將檔案拖曳到自訂群組進行分組。
 * 📋 **複製檔名／相對路徑**：檔案右鍵選單可快速複製檔名或相對路徑到剪貼簿。
 
@@ -78,10 +79,10 @@ editorGrouper/
 | ---------------- | ---------------------------------- |
 | `extension.ts`   | 初始化 provider、D&D 控制器與指令註冊。        |
 | `provider.ts`    | 實作 `TreeDataProvider`，負責群組資料與樹狀結構。 |
-| `treeItems.ts`   | 定義 `TreeItem` 類別，控制顯示與互動行為。        |
+| `treeItems.ts`   | 定義 `TreeItem` 類別，控制顯示與互動行為。每個檔案項目都記錄其所屬群組索引。        |
 | `types.ts`       | 定義 `TempGroup` 等共用資料結構。            |
 | `dragAndDrop.ts` | 實作拖曳控制邏輯（拖曳檔案至群組）。                 |
-| `commands.ts`    | 註冊並處理如新增群組、刪除群組等 VS Code 指令。       |
+| `commands.ts`    | 註冊並處理如新增群組、刪除群組、單一檔案移除等 VS Code 指令。       |
 
 ### 模組互動圖
 
@@ -107,6 +108,85 @@ flowchart TD
 2. `provider` 載入已開啟檔案，依副檔名分群。
 3. 使用者與 UI 互動（如點擊、拖曳、指令）將更新 `provider` 中的資料。
 4. 群組資料更新後，自動儲存至 `workspaceState` 並觸發 UI 刷新。
+5. 資料結構：
+
+  ```mermaid
+      flowchart TD
+        %% 資料層
+        TempGroup["TempGroup[] 群組資料陣列"] --> |包含| Files["string[] 檔案URI陣列"]
+        TempGroup --> |有屬性| GroupProperties["群組屬性"]
+        GroupProperties --> BuiltIn["builtIn?: boolean 是否為內建群組"]
+        GroupProperties --> Auto["auto?: boolean 是否為自動分群"]
+        GroupProperties --> Name["name: string 群組名稱"]
+
+        %% UI層轉換
+        TempFoldersProvider["TempFoldersProvider 資料提供者"] --> |管理| TempGroup
+        TempFoldersProvider --> |轉換為| TreeItems["TreeItem UI層"]
+
+        %% TreeItem 類型
+        TreeItems --> FolderItem["TempFolderItem 群組節點"]
+        TreeItems --> FileItem["TempFileItem 檔案節點"]
+
+        %% 檔案節點的屬性
+        FileItem --> |參照| VSCodeUri["vscode.Uri 檔案資源位址"]
+        FileItem --> |記錄| GroupIndex["groupIdx: number 所屬群組索引"]
+
+        %% 操作層
+        DragAndDrop["TempFoldersDragAndDropController 拖曳控制器"] --> |操作| TempFoldersProvider
+        Commands["命令註冊"] --> |直接操作| TempGroup
+        Commands --> |透過索引定位| GroupIndex
+
+```
+
+6. 實際使用範例：
+
+**資料層 (TempGroup)**：
+這是實際儲存的資料結構，存在於記憶體和 workspaceState 中：
+
+```json
+const groups: TempGroup[] = [
+    {
+        name: "目前已開啟檔案",  // 群組名稱
+        files: [
+            "file:///c:/project/file1.ts",
+            "file:///c:/project/file2.json"
+        ],
+        builtIn: true  // 這是內建群組
+    },
+    {
+        name: "TypeScript 檔案",  // 自動分類的群組
+        files: [
+            "file:///c:/project/file1.ts",
+            "file:///c:/project/file3.ts"
+        ],
+        auto: true  // 這是自動分群群組
+    },
+    {
+        name: "我的自訂群組",  // 使用者自訂群組
+        files: [
+            "file:///c:/project/file1.ts",
+            "file:///c:/project/file2.json"
+        ]
+        // 非內建也非自動
+    }
+];
+```
+
+**UI 顯示層 (TreeItems)**：
+`TempGroup` 資料會被轉換成 TreeView 項目供 VS Code 顯示：
+
+```typescript
+// 群組節點 (對應 TempGroup)
+new TempFolderItem("TypeScript 檔案", 1, false)
+    ├── new TempFileItem(Uri.file("file1.ts"), 1, false)  // 檔案節點，記錄群組索引
+    └── new TempFileItem(Uri.file("file3.ts"), 1, false)  // 檔案節點，記錄群組索引
+```
+
+**轉換流程**：
+
+1. `TempGroup[]` 資料 → `TempFoldersProvider.getChildren()`
+2. → `TempFolderItem` (群組節點) + `TempFileItem[]` (檔案節點)
+3. → VS Code TreeView 顯示
 
 ---
 
@@ -160,6 +240,14 @@ flowchart TD
 ### 可以自訂分群邏輯嗎？
 
 目前僅支援依據副檔名自動分群。未來將加入以**資料夾路徑**、**關鍵字**等自訂規則。
+
+### 如何移除群組中的單一檔案？
+
+對於非內建群組（如自訂群組），您可以：
+
+1. 在檔案項目上右鍵點擊，選擇「從群組移除檔案」
+2. 點擊檔案項目旁的垃圾桶圖示
+注意：「目前已開啟檔案」等內建群組不支援單一檔案移除。
 
 ---
 
