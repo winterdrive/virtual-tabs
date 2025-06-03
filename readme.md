@@ -4,21 +4,38 @@
 
 ## 🔍 專案簡介
 
-**VirtualTabs** 是一款簡潔實用的 VS Code 擴充套件，可將所有**目前開啟的檔案依副檔名分群**，並在側邊欄新增「Virtual Tabs」TreeView 介面。適合多檔案編輯、切換頻繁的開發工作流程，幫助你更快速定位檔案、減少認知負擔。
+**VirtualTabs** 是一款簡潔實用的 VS Code 擴充套件，提供檔案分群管理功能，讓你在多檔案開發環境中更有效率地組織和切換檔案。透過側邊欄的「Virtual Tabs」TreeView 介面，支援自動分群、自訂群組管理、拖曳操作和多選檔案批次處理等進階功能。
 
 ---
 
 ## ✨ 主要功能
 
-* 📁 **副檔名自動分群**：依據副檔名（如 `.ts`, `.json`）建立群組。
-* 🌲 **TreeView 顯示介面**：於側邊欄 Explorer 中新增「Virtual Tabs」視圖。
-* 🖱️ **可點選快速開檔**：點擊節點即可切換至對應檔案。
-* 🔄 **即時同步（僅限「目前已開啟檔案」群組）**：開啟、關閉檔案時「目前已開啟檔案」群組會自動更新。自訂群組需手動加入/移除檔案。
-* 🗂️ **自訂群組管理**：可新增、刪除、複製、重命名自訂群組。
-* 🖱️ **多選檔案操作**：支援多選檔案一鍵開啟、關閉、移除。
-* 🗑️ **單一檔案移除**：非內建群組的檔案可透過右鍵選單或垃圾桶圖示快速移除。
-* 🖱️ **拖曳檔案至群組**：可將檔案拖曳到自訂群組進行分組。
-* 📋 **複製檔名／相對路徑**：檔案右鍵選單可快速複製檔名或相對路徑到剪貼簿。
+### 🗂️ 群組管理
+
+* 📁 **「目前已開啟檔案」內建群組**：自動同步 VS Code 已開啟的檔案狀態
+* 🆕 **自訂群組建立**：可新增、刪除、重命名和複製自訂群組
+* 🔄 **群組複製功能**：支援內建群組與自訂群組的複製操作
+* ⚡ **自動副檔名分群**：針對選取群組執行依副檔名自動分群
+
+### 🌲 TreeView 互動介面
+
+* 🖱️ **多選檔案支援**：可同時選取多個檔案進行批次操作
+* 🖱️ **拖曳檔案至群組**：支援從外部或群組間拖曳檔案進行分組
+* 🗑️ **彈性檔案移除**：提供垃圾桶圖示和右鍵選單移除檔案
+* 🖱️ **智慧點選操作**：檔案項目單擊僅選取，避免誤觸開啟
+
+### 📂 批次檔案操作
+
+* 🔓 **批次開啟/關閉**：一鍵開啟或關閉群組內所有檔案
+* 🗂️ **多選檔案管理**：支援多選檔案的開啟、關閉和移除操作
+* 🎯 **跨群組檔案移動**：透過多選和拖曳實現檔案跨群組管理
+
+### 📋 便利輔助功能
+
+* 📄 **複製檔名**：快速複製檔案名稱到剪貼簿
+* 📁 **複製相對路徑**：複製檔案相對於工作區的路徑
+* 📍 **複製絕對路徑**：複製檔案的完整系統路徑
+* 🔍 **檔案總管整合**：「在檔案總管顯示」功能
 
 ### UI 範例圖
 
@@ -28,226 +45,90 @@
 
 ## ⚠️ 注意事項
 
-* 只有「目前已開啟檔案」群組會自動同步 VS Code 的開啟/關閉狀態。
-* 其他自訂群組需手動加入、移除檔案。
-* 目前僅支援依副檔名自動分群，尚未支援以資料夾路徑、關鍵字等自訂規則。
+* 只有「目前已開啟檔案」群組會自動同步 VS Code 的開啟/關閉狀態
+* 其他自訂群組需透過拖曳或手動操作來加入/移除檔案
+* 自動副檔名分群功能需先選取特定群組才能執行
+* 內建群組不支援「一鍵開啟/關閉」功能（因檔案已在開啟狀態）
 
 ---
 
 ## ⚙️ 安裝與使用
 
-### 1. 安裝依賴
+### 📦 從 VS Code Marketplace 安裝
 
-```bash
-npm install
-```
+1. 開啟 VS Code
+2. 前往擴展面板（`Ctrl+Shift+X` 或 `Cmd+Shift+X`）
+3. 搜尋 "VirtualTabs"
+4. 點擊安裝
 
-### 2. 編譯原始碼
+### 🎯 基本使用方式
 
-```bash
-npm run vscode:prepublish
-```
+1. **檢視群組**：在 Explorer 側邊欄找到「Virtual Tabs」視圖
+2. **新增群組**：右鍵點選現有群組 → 選擇「新增分群」
+3. **加入檔案**：將檔案從檔案總管拖曳到群組中
+4. **批次操作**：使用 `Ctrl`/`Cmd` 多選檔案進行批次操作
+5. **自動分群**：選取群組後右鍵選擇「自動依副檔名分群」
 
-### 3. 啟動 Extension Host
+### 🧑‍💻 開發者相關
 
-於 VS Code 按下 `F5`，開啟開發者模式，側邊欄將出現「Virtual Tabs」視圖。
+如需進行擴展開發或貢獻程式碼，請參閱 **[開發指南 (DEVELOPMENT.md)](./DEVELOPMENT.md)**，其中包含：
 
----
-
-## 🧩 檔案結構與模組設計
-
-### 目錄總覽
-
-```text
-editorGrouper/
-├── package.json           # 擴充套件描述與註冊點
-├── tsconfig.json          # TypeScript 編譯設定
-├── readme.md              # 使用與開發說明
-├── architecture.md        # 架構文件
-└── src/
-    ├── extension.ts       # 擴充套件主程式
-    ├── types.ts           # 資料結構定義
-    ├── treeItems.ts       # TreeView 項目定義
-    ├── provider.ts        # 分群資料與 TreeView 提供者
-    ├── dragAndDrop.ts     # 拖曳控制器
-    └── commands.ts        # 指令註冊與邏輯實作
-```
-
-### 模組職責說明
-
-| 模組檔案             | 功能簡述                               |
-| ---------------- | ---------------------------------- |
-| `extension.ts`   | 初始化 provider、D&D 控制器與指令註冊。        |
-| `provider.ts`    | 實作 `TreeDataProvider`，負責群組資料與樹狀結構。 |
-| `treeItems.ts`   | 定義 `TreeItem` 類別，控制顯示與互動行為。每個檔案項目都記錄其所屬群組索引。        |
-| `types.ts`       | 定義 `TempGroup` 等共用資料結構。            |
-| `dragAndDrop.ts` | 實作拖曳控制邏輯（拖曳檔案至群組）。                 |
-| `commands.ts`    | 註冊並處理如新增群組、刪除群組、單一檔案移除等 VS Code 指令。       |
-
-### 模組互動圖
-
-```mermaid
-flowchart TD
-    extension.ts --> provider.ts
-    extension.ts --> dragAndDrop.ts
-    extension.ts --> commands.ts
-    provider.ts --> treeItems.ts
-    provider.ts --> types.ts
-    dragAndDrop.ts --> provider.ts
-    dragAndDrop.ts --> treeItems.ts
-    commands.ts --> provider.ts
-    commands.ts --> treeItems.ts
-    treeItems.ts --> types.ts
-```
-
----
-
-## 🔁 資料流簡介
-
-1. `extension.ts` 啟動時初始化 `provider`、拖曳控制器與指令。
-2. `provider` 載入已開啟檔案，依副檔名分群。
-3. 使用者與 UI 互動（如點擊、拖曳、指令）將更新 `provider` 中的資料。
-4. 群組資料更新後，自動儲存至 `workspaceState` 並觸發 UI 刷新。
-5. 資料結構：
-
-  ```mermaid
-      flowchart TD
-        %% 資料層
-        TempGroup["TempGroup[] 群組資料陣列"] --> |包含| Files["string[] 檔案URI陣列"]
-        TempGroup --> |有屬性| GroupProperties["群組屬性"]
-        GroupProperties --> BuiltIn["builtIn?: boolean 是否為內建群組"]
-        GroupProperties --> Auto["auto?: boolean 是否為自動分群"]
-        GroupProperties --> Name["name: string 群組名稱"]
-
-        %% UI層轉換
-        TempFoldersProvider["TempFoldersProvider 資料提供者"] --> |管理| TempGroup
-        TempFoldersProvider --> |轉換為| TreeItems["TreeItem UI層"]
-
-        %% TreeItem 類型
-        TreeItems --> FolderItem["TempFolderItem 群組節點"]
-        TreeItems --> FileItem["TempFileItem 檔案節點"]
-
-        %% 檔案節點的屬性
-        FileItem --> |參照| VSCodeUri["vscode.Uri 檔案資源位址"]
-        FileItem --> |記錄| GroupIndex["groupIdx: number 所屬群組索引"]
-
-        %% 操作層
-        DragAndDrop["TempFoldersDragAndDropController 拖曳控制器"] --> |操作| TempFoldersProvider
-        Commands["命令註冊"] --> |直接操作| TempGroup
-        Commands --> |透過索引定位| GroupIndex
-
-```
-
-6. 實際使用範例：
-
-**資料層 (TempGroup)**：
-這是實際儲存的資料結構，存在於記憶體和 workspaceState 中：
-
-```json
-const groups: TempGroup[] = [
-    {
-        name: "目前已開啟檔案",  // 群組名稱
-        files: [
-            "file:///c:/project/file1.ts",
-            "file:///c:/project/file2.json"
-        ],
-        builtIn: true  // 這是內建群組
-    },
-    {
-        name: "TypeScript 檔案",  // 自動分類的群組
-        files: [
-            "file:///c:/project/file1.ts",
-            "file:///c:/project/file3.ts"
-        ],
-        auto: true  // 這是自動分群群組
-    },
-    {
-        name: "我的自訂群組",  // 使用者自訂群組
-        files: [
-            "file:///c:/project/file1.ts",
-            "file:///c:/project/file2.json"
-        ]
-        // 非內建也非自動
-    }
-];
-```
-
-**UI 顯示層 (TreeItems)**：
-`TempGroup` 資料會被轉換成 TreeView 項目供 VS Code 顯示：
-
-```typescript
-// 群組節點 (對應 TempGroup)
-new TempFolderItem("TypeScript 檔案", 1, false)
-    ├── new TempFileItem(Uri.file("file1.ts"), 1, false)  // 檔案節點，記錄群組索引
-    └── new TempFileItem(Uri.file("file3.ts"), 1, false)  // 檔案節點，記錄群組索引
-```
-
-**轉換流程**：
-
-1. `TempGroup[]` 資料 → `TempFoldersProvider.getChildren()`
-2. → `TempFolderItem` (群組節點) + `TempFileItem[]` (檔案節點)
-3. → VS Code TreeView 顯示
-
----
-
-## 🛠️ 設定與配置
-
-### package.json（重點節錄）
-
-```json
-{
-  "name": "virtual-tabs",
-  "displayName": "VirtualTabs",
-  "description": "Group open tabs by file type in a sidebar view",
-  "main": "./dist/extension.js",
-  "activationEvents": ["*"],
-  "contributes": {
-    "views": {
-      "explorer": [
-        {
-          "id": "virtualTabsView",
-          "name": "Grouped Tabs"
-        }
-      ]
-    }
-  }
-}
-```
-
-### tsconfig.json
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "outDir": "dist",
-    "rootDir": "src",
-    "strict": true
-  },
-  "include": ["src"]
-}
-```
+* 完整的開發環境建置步驟
+* 調試配置與技巧
+* 專案架構與模組說明
+* 資料流程圖解
+* 常見開發問題解決
+* 發布與部署流程
 
 ---
 
 ## ❓ 常見問題（FAQ）
 
-### 為什麼沒有看到「Grouped Tabs」視圖？
+### 為什麼沒有看到「Virtual Tabs」視圖？
 
-請確認是否正確啟動 Extension Host（按下 `F5`），並查看左側邊欄的 Explorer 分頁。
+請確認：
 
-### 可以自訂分群邏輯嗎？
+1. 擴充套件已正確安裝並啟用
+2. 查看左側邊欄的 Explorer 分頁中是否有「Virtual Tabs」區塊
+3. 開發模式下需按 `F5` 啟動 Extension Development Host
 
-目前僅支援依據副檔名自動分群。未來將加入以**資料夾路徑**、**關鍵字**等自訂規則。
+### 如何進行批次檔案操作？
+
+1. **多選檔案**：按住 `Ctrl`（Windows/Linux）或 `Cmd`（macOS）點選多個檔案
+2. **右鍵操作**：對選取的檔案按右鍵，選擇對應操作
+3. **支援功能**：開啟選取的檔案、關閉選取的檔案、從群組移除選取的檔案
+
+### 自動副檔名分群如何使用？
+
+1. 先選取一個包含檔案的群組（點選群組名稱）
+2. 右鍵選擇「自動依副檔名分群」
+3. 系統會依據選取群組內檔案的副檔名建立多個「[自動] .副檔名」群組
 
 ### 如何移除群組中的單一檔案？
 
-對於非內建群組（如自訂群組），您可以：
+針對自訂群組中的檔案：
 
-1. 在檔案項目上右鍵點擊，選擇「從群組移除檔案」
-2. 點擊檔案項目旁的垃圾桶圖示
-注意：「目前已開啟檔案」等內建群組不支援單一檔案移除。
+1. **垃圾桶圖示**：點擊檔案項目旁的垃圾桶圖示
+2. **右鍵選單**：在檔案項目上右鍵選擇「從群組中移除檔案」
+
+注意：內建群組「目前已開啟檔案」不支援單一檔案移除。
+
+### 拖曳功能不工作怎麼辦？
+
+確認以下事項：
+
+1. 目標必須是群組（資料夾圖示），不是檔案
+2. 支援從檔案總管拖曳檔案到群組
+3. 支援群組間檔案拖曳移動
+4. 檢查 VS Code 版本是否符合需求（^1.75.0）
+
+### 群組資料會保存嗎？
+
+是的，群組資料會自動保存在：
+
+* VS Code 的 `workspaceState` 中
+* 每次操作後自動儲存
+* 重新開啟工作區時自動載入
 
 ---
 
@@ -261,16 +142,47 @@ new TempFolderItem("TypeScript 檔案", 1, false)
 
 ## 🤝 貢獻方式
 
-我們歡迎任何形式的貢獻！
+我們非常歡迎社群貢獻！參與方式：
 
-* 💬 回報錯誤與需求：請透過 [GitHub Issues](https://github.com/winterdrive/virtual-tabs/issues)。
-* ✨ 新功能或改善 UI：歡迎提出 [Pull Request](https://github.com/winterdrive/virtual-tabs/pulls)。
-* 📖 文件改進：發現敘述不清歡迎協助修正。
+### 🐛 問題回報
+
+* 前往 [GitHub Issues](https://github.com/winterdrive/virtual-tabs/issues)
+* 提供詳細的錯誤描述和重現步驟
+* 附上 VS Code 版本和作業系統資訊
+
+### ✨ 功能建議
+
+* 在 Issues 中標記為 `enhancement`
+* 描述功能需求和使用場景
+* 歡迎提供 UI/UX 設計建議
+
+### 🔧 程式碼貢獻
+
+1. Fork 專案並建立功能分支
+2. 遵循現有的程式碼風格（TypeScript + 繁體中文註解）
+3. 確保 TypeScript 編譯無錯誤
+4. 在 Extension Development Host 中測試功能
+5. 提交 Pull Request 並詳細說明變更
+
+### 📖 文件改進
+
+* 發現文件錯誤或不清楚的描述
+* 補充使用案例和最佳實務
+* 翻譯文件為其他語言
+
+詳細的開發指南請參閱 **[DEVELOPMENT.md](./DEVELOPMENT.md)**。
 
 ---
 
 ## 📄 授權條款
 
-本專案採用 MIT 授權，可自由使用、修改與再發佈。
+本專案採用 MIT 授權條款，您可以自由：
+
+* ✅ 商業使用
+* ✅ 修改程式碼
+* ✅ 散布與再發佈
+* ✅ 私人使用
+
+唯須保留原始授權聲明。詳見 [LICENSE](./LICENSE) 檔案。
 
 ---
