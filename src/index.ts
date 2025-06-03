@@ -14,3 +14,6 @@ export * from './dragAndDrop';
 
 // 指令註冊
 export * from './commands';
+
+// 國際化工具
+export * from './i18n';

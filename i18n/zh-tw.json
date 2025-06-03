@@ -1,0 +1,29 @@
+{
+    "group.builtInName": "目前已開啟檔案",
+    "group.newGroupName": "新群組",
+    "group.autoGroupPrefix": "[自動]",
+    "group.copyPostfix": "複本",
+    
+    "message.pleaseSelectGroup": "請先選取一個群組再進行自動分群。",
+    "message.noFilesToGroup": "選取的群組沒有檔案可分群。",
+    "message.builtInGroupNotSupported": "「目前已開啟檔案」群組不需要使用此功能",
+    "message.noFilesToOpen": "群組「{0}」中沒有檔案可開啟",
+    "message.noFilesToClose": "群組「{0}」中沒有檔案可關閉",
+    "message.groupNotFound": "群組不存在或沒有檔案",
+    "message.fileNotInGroup": "檔案不在指定的群組中",
+    "message.fileRemovedFromGroup": "已從「{0}」群組移除檔案",
+    
+    "input.groupNamePrompt": "請輸入新的群組名稱",
+    "input.groupNameError.empty": "名稱不可為空",
+    "input.groupNameError.duplicate": "名稱重複",
+    
+    "progress.openingFiles": "正在開啟群組「{0}」中的檔案",
+    "progress.closingFiles": "正在關閉群組「{0}」中的檔案",
+    "progress.openingSelected": "正在開啟選取的檔案",
+    "progress.closingSelected": "正在關閉選取的檔案",
+    "progress.fileCount": "({0}/{1})",
+    
+    "error.cannotOpenFile": "無法開啟檔案 {0}",
+    "error.cannotCloseTab": "無法關閉標籤頁",
+    "error.cannotParseUri": "無法解析 URI: {0}"
+}

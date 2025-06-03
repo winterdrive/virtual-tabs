@@ -1,7 +1,7 @@
 {
     "name": "virtual-tabs",
-    "displayName": "VirtualTabs",
-    "description": "Group open tabs and files in a sidebar view, making it easier to add files with GitHub Copilot",
+    "displayName": "%extension.displayName%",
+    "description": "%extension.description%",
     "version": "0.0.2",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
@@ -33,7 +33,7 @@
             "activitybar": [
                 {
                     "id": "virtualTabsContainer",
-                    "title": "Virtual Tabs",
+                    "title": "%view.virtualTabsContainer.title%",
                     "icon": "assets/virtualtabs_icon_gray.svg"
                 }
             ]
@@ -42,33 +42,33 @@
             "virtualTabsContainer": [
                 {
                     "id": "virtualTabsView",
-                    "name": "Virtual Tabs",
+                    "name": "%view.virtualTabsView.name%",
                     "icon": "assets/virtualtabs_icon_gray.svg"
                 }
             ]
         },
         "commands": [
-            { "command": "virtualTabs.addGroup", "title": "新增分群" },
-            { "command": "virtualTabs.removeGroup", "title": "🗑" },
-            { "command": "virtualTabs.renameGroup", "title": "重命名群組" },
-            { "command": "virtualTabs.duplicateGroup", "title": "複製群組" },
-            { "command": "virtualTabs.duplicateBuiltInGroup", "title": "複製群組（目前已開啟檔案）" },
-            { "command": "virtualTabs.refreshBuiltInGroup", "title": "🔄" },
-            { "command": "virtualTabs.autoGroupByExt", "title": "自動依副檔名分群" },
-            { "command": "virtualTabs.addSelectedFilesToGroup", "title": "加入選取的檔案到群組" },
-            { "command": "virtualTabs.openAllFiles", "title": "全部開啟群組檔案" },
-            { "command": "virtualTabs.closeAllFiles", "title": "全部關閉群組檔案" },
+            { "command": "virtualTabs.addGroup", "title": "%command.addGroup.title%" },
+            { "command": "virtualTabs.removeGroup", "title": "%command.removeGroup.title%" },
+            { "command": "virtualTabs.renameGroup", "title": "%command.renameGroup.title%" },
+            { "command": "virtualTabs.duplicateGroup", "title": "%command.duplicateGroup.title%" },
+            { "command": "virtualTabs.duplicateBuiltInGroup", "title": "%command.duplicateBuiltInGroup.title%" },
+            { "command": "virtualTabs.refreshBuiltInGroup", "title": "%command.refreshBuiltInGroup.title%" },
+            { "command": "virtualTabs.autoGroupByExt", "title": "%command.autoGroupByExt.title%" },
+            { "command": "virtualTabs.addSelectedFilesToGroup", "title": "%command.addSelectedFilesToGroup.title%" },
+            { "command": "virtualTabs.openAllFiles", "title": "%command.openAllFiles.title%" },
+            { "command": "virtualTabs.closeAllFiles", "title": "%command.closeAllFiles.title%" },
             
-            { "command": "virtualTabs.openSelectedFiles", "title": "開啟選取的檔案" },
-            { "command": "virtualTabs.closeSelectedFiles", "title": "關閉選取的檔案" },
-            { "command": "virtualTabs.removeSelectedFilesFromGroup", "title": "從群組移除選取的檔案" },
-            { "command": "deleteFile", "title": "刪除檔案" },
+            { "command": "virtualTabs.openSelectedFiles", "title": "%command.openSelectedFiles.title%" },
+            { "command": "virtualTabs.closeSelectedFiles", "title": "%command.closeSelectedFiles.title%" },
+            { "command": "virtualTabs.removeSelectedFilesFromGroup", "title": "%command.removeSelectedFilesFromGroup.title%" },
+            { "command": "deleteFile", "title": "%command.deleteFile.title%" },
 
-            { "command": "copyFilePath", "title": "複製絕對路徑" },
-            { "command": "virtualTabs.copyFileName", "title": "複製檔名" },
-            { "command": "virtualTabs.copyRelativePath", "title": "複製相對路徑" },
-            { "command": "revealFileInOS", "title": "在檔案總管顯示" },
-            { "command": "virtualTabs.removeFileFromGroup", "title": "🗑" }
+            { "command": "copyFilePath", "title": "%command.copyFilePath.title%" },
+            { "command": "virtualTabs.copyFileName", "title": "%command.copyFileName.title%" },
+            { "command": "virtualTabs.copyRelativePath", "title": "%command.copyRelativePath.title%" },
+            { "command": "revealFileInOS", "title": "%command.revealFileInOS.title%" },
+            { "command": "virtualTabs.removeFileFromGroup", "title": "%command.removeFileFromGroup.title%" }
         ],
         "menus": {
             "view/item/context": [

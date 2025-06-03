@@ -1,0 +1,29 @@
+{
+    "group.builtInName": "Currently Open Files",
+    "group.newGroupName": "New Group",
+    "group.autoGroupPrefix": "[Auto]",
+    "group.copyPostfix": "Copy",
+    
+    "message.pleaseSelectGroup": "Please select a group first before auto-grouping.",
+    "message.noFilesToGroup": "The selected group has no files to group.",
+    "message.builtInGroupNotSupported": "The \"Currently Open Files\" group does not need this feature",
+    "message.noFilesToOpen": "No files to open in group \"{0}\"",
+    "message.noFilesToClose": "No files to close in group \"{0}\"",
+    "message.groupNotFound": "Group does not exist or has no files",
+    "message.fileNotInGroup": "File is not in the specified group",
+    "message.fileRemovedFromGroup": "File removed from group \"{0}\"",
+    
+    "input.groupNamePrompt": "Enter new group name",
+    "input.groupNameError.empty": "Name cannot be empty",
+    "input.groupNameError.duplicate": "Name already exists",
+    
+    "progress.openingFiles": "Opening files in group \"{0}\"",
+    "progress.closingFiles": "Closing files in group \"{0}\"",
+    "progress.openingSelected": "Opening selected files",
+    "progress.closingSelected": "Closing selected files",
+    "progress.fileCount": "({0}/{1})",
+    
+    "error.cannotOpenFile": "Cannot open file {0}",
+    "error.cannotCloseTab": "Cannot close tab",
+    "error.cannotParseUri": "Cannot parse URI: {0}"
+}

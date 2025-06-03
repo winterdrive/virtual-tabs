@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { TempGroup } from './types';
 import { TempFileItem, TempFolderItem } from './treeItems';
+import { I18n } from './i18n';
 
 // TreeDataProvider 實作
 export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -65,7 +66,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             .map(tab => (tab.input as any)?.uri as vscode.Uri)
             .filter((uri): uri is vscode.Uri => !!uri)
             .map(uri => uri.toString());
-        this.groups.unshift({ name: '目前已開啟檔案', files: openUris, builtIn: true });
+        this.groups.unshift({ name: I18n.getBuiltInGroupName(), files: openUris, builtIn: true });
     }
 
     refresh(): void {
@@ -86,10 +87,10 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     addGroup() {
         // 自動產生名稱 New Group 1, 2, ...
         let idx = 1;
-        let name = `New Group ${idx}`;
+        let name = I18n.getGroupName(undefined, idx);
         while (this.groups.some(g => g.name === name)) {
             idx++;
-            name = `New Group ${idx}`;
+            name = I18n.getGroupName(undefined, idx);
         }
         this.groups.push({ name, files: [] });
         this.refresh();
@@ -125,7 +126,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (files.length > 0) {
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: `正在開啟群組「${group.name}」中的檔案`,
+                title: I18n.getMessage('progress.openingFiles', group.name),
                 cancellable: false
             }, async (progress) => {
                 const total = files.length;
@@ -140,17 +141,17 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                         openedCount++;
                         progress.report({
                             increment: step,
-                            message: `(${openedCount}/${total})`
+                            message: I18n.getMessage('progress.fileCount', openedCount.toString(), total.toString())
                         });
                         // 給系統一點時間處理
                         await new Promise(resolve => setTimeout(resolve, 100));
                     } catch (e) {
-                        console.error(`無法開啟檔案 ${uriStr}`, e);
+                        console.error(I18n.getMessage('error.cannotOpenFile', uriStr), e);
                     }
                 }
             });
         } else {
-            vscode.window.showInformationMessage(`群組「${group.name}」中沒有檔案可開啟`);
+            vscode.window.showInformationMessage(I18n.getMessage('message.noFilesToOpen', group.name));
         }
     }
 
@@ -165,7 +166,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             // 顯示進度通知
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: `正在關閉群組「${group.name}」中的檔案`,
+                title: I18n.getMessage('progress.closingFiles', group.name),
                 cancellable: false
             }, async (progress) => {
                 const total = files.length;
@@ -177,7 +178,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                     try {
                         return vscode.Uri.parse(uriStr);
                     } catch (e) {
-                        console.error(`無法解析 URI: ${uriStr}`, e);
+                        console.error(I18n.getMessage('error.cannotParseUri', uriStr), e);
                         return null;
                     }
                 }).filter((uri): uri is vscode.Uri => uri !== null);
@@ -203,18 +204,18 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                         closedCount++;
                         progress.report({
                             increment: step,
-                            message: `(${closedCount}/${tabsToClose.length})`
+                            message: I18n.getMessage('progress.fileCount', closedCount.toString(), tabsToClose.length.toString())
                         });
                         // 給系統一點時間處理
                         await new Promise(resolve => setTimeout(resolve, 50));
                     } catch (e) {
-                        console.error(`無法關閉標籤頁:`, e);
+                        console.error(I18n.getMessage('error.cannotCloseTab'), e);
                     }
                 }
 
             });
         } else {
-            vscode.window.showInformationMessage(`群組「${group.name}」中沒有檔案可關閉`);
+            vscode.window.showInformationMessage(I18n.getMessage('message.noFilesToClose', group.name));
         }
     }
 
@@ -225,7 +226,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         // 顯示進度通知
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: `正在開啟選取的檔案`,
+            title: I18n.getMessage('progress.openingSelected'),
             cancellable: false
         }, async (progress) => {
             const total = fileItems.length;
@@ -239,12 +240,12 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                     openedCount++;
                     progress.report({
                         increment: step,
-                        message: `(${openedCount}/${total})`
+                        message: I18n.getMessage('progress.fileCount', openedCount.toString(), total.toString())
                     });
                     // 給系統一點時間處理
                     await new Promise(resolve => setTimeout(resolve, 100));
                 } catch (e) {
-                    console.error(`無法開啟檔案: ${item.uri.toString()}`, e);
+                    console.error(I18n.getMessage('error.cannotOpenFile', item.uri.toString()), e);
                 }
             }
         });
@@ -257,7 +258,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         // 顯示進度通知
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: `正在關閉選取的檔案`,
+            title: I18n.getMessage('progress.closingSelected'),
             cancellable: false
         }, async (progress) => {
             const total = fileItems.length;
@@ -284,12 +285,12 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                     closedCount++;
                     progress.report({
                         increment: step,
-                        message: `(${closedCount}/${tabsToClose.length})`
+                        message: I18n.getMessage('progress.fileCount', closedCount.toString(), tabsToClose.length.toString())
                     });
                     // 給系統一點時間處理
                     await new Promise(resolve => setTimeout(resolve, 50));
                 } catch (e) {
-                    console.error(`無法關閉標籤頁:`, e);
+                    console.error(I18n.getMessage('error.cannotCloseTab'), e);
                 }
             }
 
@@ -326,13 +327,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     addAutoGroupsByExt() {
         // 僅允許單一群組選取
         if (!this.treeView || this.treeView.selection.length !== 1 || !(this.treeView.selection[0] instanceof TempFolderItem)) {
-            vscode.window.showInformationMessage('請先選取一個群組再進行自動分群。');
+            vscode.window.showInformationMessage(I18n.getMessage('message.pleaseSelectGroup'));
             return;
         }
         const groupIdx = (this.treeView.selection[0] as TempFolderItem).groupIdx;
         const group = this.groups[groupIdx];
         if (!group || !group.files || group.files.length === 0) {
-            vscode.window.showInformationMessage('選取的群組沒有檔案可分群。');
+            vscode.window.showInformationMessage(I18n.getMessage('message.noFilesToGroup'));
             return;
         }
         // 依副檔名分群
@@ -349,7 +350,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.groups = this.groups.filter((g, idx) => g.builtIn || !g.auto || idx === groupIdx);
         // 在原群組位置插入自動分群
         const newGroups = Object.entries(extMap).map(([ext, files]) => ({
-            name: `[自動] .${ext}`,
+            name: I18n.getAutoGroupName(ext),
             files,
             auto: true
         }));

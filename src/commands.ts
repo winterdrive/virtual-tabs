@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { TempFoldersProvider } from './provider';
 import { TempFileItem, TempFolderItem } from './treeItems';
+import { I18n } from './i18n';
 
 // VirtualTabs 指令註冊
 export function registerCommands(context: vscode.ExtensionContext, provider: TempFoldersProvider): void {
@@ -27,7 +28,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             // 檢查是否為內建群組，若是則不執行
             const group = provider.groups[item.groupIdx];
             if (group?.builtIn) {
-                vscode.window.showInformationMessage('「目前已開啟檔案」群組不需要使用此功能');
+                vscode.window.showInformationMessage(I18n.getMessage('message.builtInGroupNotSupported'));
                 return;
             }
             await provider.openAllFilesInGroup(item.groupIdx);
@@ -40,7 +41,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             // 檢查是否為內建群組，若是則不執行
             const group = provider.groups[item.groupIdx];
             if (group?.builtIn) {
-                vscode.window.showInformationMessage('「目前已開啟檔案」群組不需要使用此功能');
+                vscode.window.showInformationMessage(I18n.getMessage('message.builtInGroupNotSupported'));
                 return;
             }
             await provider.closeAllFilesInGroup(item.groupIdx);
@@ -56,10 +57,10 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         // 產生新名稱
         let base = group.name.replace(/\s*Copy( \d+)?$/, '');
         let idx = 1;
-        let newName = `${base} Copy`;
+        let newName = I18n.getCopyGroupName(base);
         while (provider.groups.some(g => g.name === newName)) {
             idx++;
-            newName = `${base} Copy ${idx}`;
+            newName = I18n.getCopyGroupName(base, idx);
         }
         
         // 複製群組
@@ -77,11 +78,11 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         if (!group || group.builtIn) return;
         
         const newName = await vscode.window.showInputBox({
-            prompt: '請輸入新的群組名稱',
+            prompt: I18n.getMessage('input.groupNamePrompt'),
             value: group.name,
             validateInput: (val) => {
-                if (!val.trim()) return '名稱不可為空';
-                if (provider.groups.some((g, i) => g.name === val && i !== item.groupIdx)) return '名稱重複';
+                if (!val.trim()) return I18n.getMessage('input.groupNameError.empty');
+                if (provider.groups.some((g, i) => g.name === val && i !== item.groupIdx)) return I18n.getMessage('input.groupNameError.duplicate');
                 return null;
             }
         });
@@ -171,12 +172,12 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         if (!group || !group.builtIn) return;
         
         // 產生新名稱
-        let base = '目前已開啟檔案';
+        let base = I18n.getBuiltInGroupName();
         let idx = 1;
-        let newName = `${base} Copy`;
+        let newName = I18n.getCopyGroupName(base);
         while (provider.groups.some(g => g.name === newName)) {
             idx++;
-            newName = `${base} Copy ${idx}`;
+            newName = I18n.getCopyGroupName(base, idx);
         }
         
         provider.groups.push({
@@ -201,7 +202,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         const group = provider.groups[groupIdx];
         
         if (!group || !group.files) {
-            vscode.window.showErrorMessage('群組不存在或沒有檔案');
+            vscode.window.showErrorMessage(I18n.getMessage('message.groupNotFound'));
             return;
         }
         
@@ -211,7 +212,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         
         // 檢查是否真的移除了檔案
         if (group.files.length === originalLength) {
-            vscode.window.showWarningMessage('檔案不在指定的群組中');
+            vscode.window.showWarningMessage(I18n.getMessage('message.fileNotInGroup'));
             return;
         }
         
@@ -219,6 +220,6 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         provider.refresh();
         
         // 顯示移除成功訊息
-        vscode.window.showInformationMessage(`已從「${group.name}」群組移除檔案`);
+        vscode.window.showInformationMessage(I18n.getMessage('message.fileRemovedFromGroup', group.name));
     }));
 }
