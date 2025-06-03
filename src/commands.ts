@@ -3,29 +3,29 @@ import { TempFoldersProvider } from './provider';
 import { TempFileItem, TempFolderItem } from './treeItems';
 import { I18n } from './i18n';
 
-// VirtualTabs 指令註冊
+// VirtualTabs command registration
 export function registerCommands(context: vscode.ExtensionContext, provider: TempFoldersProvider): void {
-    // 註冊新增分群指令
+    // Register add group command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.addGroup', () => {
         provider.addGroup();
     }));
 
-    // 註冊刪除群組指令
+    // Register remove group command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeGroup', (item: TempFolderItem) => {
         if (typeof item?.groupIdx === 'number') {
             provider.removeGroup(item.groupIdx);
         }
     }));
 
-    // 註冊依副檔名自動分群指令
+    // Register auto group by extension command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.autoGroupByExt', () => {
         provider.addAutoGroupsByExt();
     }));    
 
-    // 一鍵開啟群組指令（僅適用於自訂群組）
+    // One-click open group command (only for custom groups)
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.openAllFiles', async (item: TempFolderItem) => {
         if (typeof item?.groupIdx === 'number') {
-            // 檢查是否為內建群組，若是則不執行
+            // Check if it is a built-in group, if so, do not execute
             const group = provider.groups[item.groupIdx];
             if (group?.builtIn) {
                 vscode.window.showInformationMessage(I18n.getMessage('message.builtInGroupNotSupported'));
@@ -35,10 +35,10 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         }
     }));
 
-    // 一鍵關閉群組指令（僅適用於自訂群組）
+    // One-click close group command (only for custom groups)
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.closeAllFiles', async (item: TempFolderItem) => {
         if (typeof item?.groupIdx === 'number') {
-            // 檢查是否為內建群組，若是則不執行
+            // Check if it is a built-in group, if so, do not execute
             const group = provider.groups[item.groupIdx];
             if (group?.builtIn) {
                 vscode.window.showInformationMessage(I18n.getMessage('message.builtInGroupNotSupported'));
@@ -48,13 +48,13 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         }
     }));
 
-    // 群組複製
+    // Group duplication
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.duplicateGroup', (item: TempFolderItem) => {
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
         if (!group || group.builtIn) return;
         
-        // 產生新名稱
+        // Generate new name
         let base = group.name.replace(/\s*Copy( \d+)?$/, '');
         let idx = 1;
         let newName = I18n.getCopyGroupName(base);
@@ -63,7 +63,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             newName = I18n.getCopyGroupName(base, idx);
         }
         
-        // 複製群組
+        // Duplicate group
         provider.groups.push({
             name: newName,
             files: group.files ? [...group.files] : []
@@ -71,7 +71,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         provider.refresh();
     }));
 
-    // 群組重命名
+    // Group rename
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.renameGroup', async (item: TempFolderItem) => {
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
@@ -91,23 +91,23 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             group.name = newName;
             provider.refresh();
         }
-    }));        // 檔案右鍵「刪除」改為從群組移除
+    }));        // File right-click "delete" is changed to remove from group
     context.subscriptions.push(vscode.commands.registerCommand('deleteFile', (item: TempFileItem, selectedItems?: TempFileItem[]) => {
-        // 處理來自瀏覽器或資源管理器的呼叫，轉發給原始命令
+        // Handle calls from browser or file explorer, forward to original command
         if (!(item instanceof TempFileItem)) {
             vscode.commands.executeCommand('workbench.action.files.delete');
             return;
         }
 
-        // 檢查是否有多個選取的檔案
+        // Check if multiple files are selected
         const allSelectedItems = provider.getSelectedFileItems();
         if (allSelectedItems.length > 1) {
-            // 有多選檔案，執行多選移除
+            // Multiple files selected, execute multi-select removal
             provider.removeFilesFromGroup(item.groupIdx, allSelectedItems);
             return;
         }
 
-        // 單選檔案的處理方式
+        // Single file handling
         const group = provider.groups[item.groupIdx];
         if (!group || !group.files) return;
 
@@ -115,7 +115,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         provider.refresh();
     }));
 
-    // 處理多選檔案開啟
+    // Handle opening multiple selected files
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.openSelectedFiles', async () => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
@@ -123,26 +123,26 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         await provider.openSelectedFiles(selectedItems);
     }));
     
-    // 處理多選檔案關閉
+    // Handle closing multiple selected files
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.closeSelectedFiles', async () => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
         
         await provider.closeSelectedFiles(selectedItems);
     }));
-        // 處理多選檔案移除
+        // Handle removing multiple selected files from group
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeSelectedFilesFromGroup', (item: TempFileItem) => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
         
-        // 如果沒有提供特定項目或項目不是 TempFileItem，使用第一個選取的項目
+        // If no specific item is provided or item is not TempFileItem, use the first selected item
         const fileItem = (item instanceof TempFileItem) ? item : selectedItems[0];
         
-        // 直接使用檔案項目的群組索引
+        // Use the group index of the file item directly
         provider.removeFilesFromGroup(fileItem.groupIdx, selectedItems);
     }));
     
-    // 群組右鍵選單「加入選取的檔案」
+    // Group context menu "Add selected files to group"
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.addSelectedFilesToGroup', (item: TempFolderItem) => {
         if (typeof item?.groupIdx !== 'number') return;
         
@@ -152,26 +152,26 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         provider.addMultipleFilesToGroup(item.groupIdx, selectedItems);
     }));
     
-    // 複製檔名指令
+    // Copy file name command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.copyFileName', async (item: TempFileItem) => {
         if (!(item instanceof TempFileItem)) return;
         const path = require('path');
         const fileName = path.basename(item.uri.fsPath);
         await vscode.env.clipboard.writeText(fileName);
-    }));    // 複製相對路徑指令
+    }));    // Copy relative path command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.copyRelativePath', async (item: TempFileItem) => {
         if (!(item instanceof TempFileItem)) return;
         const relativePath = vscode.workspace.asRelativePath(item.uri);
         await vscode.env.clipboard.writeText(relativePath);
     }));
 
-    // 內建群組複製
+    // Duplicate built-in group
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.duplicateBuiltInGroup', (item: TempFolderItem) => {
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
         if (!group || !group.builtIn) return;
         
-        // 產生新名稱
+        // Generate new name
         let base = I18n.getBuiltInGroupName();
         let idx = 1;
         let newName = I18n.getCopyGroupName(base);
@@ -187,17 +187,17 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         provider.refresh();
     }));
 
-    // 內建群組重新整理
+    // Refresh built-in group
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.refreshBuiltInGroup', (item: TempFolderItem) => {
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
         if (!group || !group.builtIn) return;
         provider.refresh();
-    }));    // 從群組中移除單一檔案
+    }));    // Remove single file from group
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeFileFromGroup', (item: TempFileItem) => {
         if (!(item instanceof TempFileItem)) return;
         
-        // 直接使用檔案項目的群組索引，不需要再搜尋
+        // Directly use the group index of the file item, no need to search again
         const groupIdx = item.groupIdx;
         const group = provider.groups[groupIdx];
         
@@ -206,20 +206,20 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             return;
         }
         
-        // 過濾掉要移除的檔案
+        // Filter out the file to be removed
         const originalLength = group.files.length;
         group.files = group.files.filter(uri => uri !== item.uri.toString());
         
-        // 檢查是否真的移除了檔案
+        // Check if the file is really removed
         if (group.files.length === originalLength) {
             vscode.window.showWarningMessage(I18n.getMessage('message.fileNotInGroup'));
             return;
         }
         
-        // 刷新 TreeView
+        // Refresh TreeView
         provider.refresh();
         
-        // 顯示移除成功訊息
+        // Show removal success message
         vscode.window.showInformationMessage(I18n.getMessage('message.fileRemovedFromGroup', group.name));
     }));
 }

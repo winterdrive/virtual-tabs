@@ -1,211 +1,211 @@
 # VirtualTabs – Organize Open Files into Smart Groups
 
-> **自定義或以副檔名分群開啟中的檔案，讓 VS Code 編輯環境井然有序。**
+> **Group your open files by custom rules or file extensions to keep your VS Code workspace organized.**
 
-## 🔍 專案簡介
+## 🔍 Project Overview
 
-**VirtualTabs** 是一款簡潔實用的 VS Code 擴充套件，提供檔案分群管理功能，讓你在多檔案開發環境中更有效率地組織和切換檔案。透過側邊欄的「Virtual Tabs」TreeView 介面，支援自動分群、自訂群組管理、拖曳操作和多選檔案批次處理等進階功能。
-
----
-
-## ✨ 主要功能
-
-### 🌍 多語言支援
-
-* 🈳 **完整國際化**：支援繁體中文、簡體中文、英文三種語言
-* 🔄 **自動語言偵測**：根據 VS Code 語言設定自動切換介面語言
-* 🛠️ **可擴展架構**：支援社群貢獻更多語言翻譯
-
-### 🗂️ 群組管理
-
-* 📁 **「目前已開啟檔案」內建群組**：自動同步 VS Code 已開啟的檔案狀態
-* 🆕 **自訂群組建立**：可新增、刪除、重命名和複製自訂群組
-* 🔄 **群組複製功能**：支援內建群組與自訂群組的複製操作
-* ⚡ **自動副檔名分群**：針對選取群組執行依副檔名自動分群
-
-### 🌲 TreeView 互動介面
-
-* 🖱️ **多選檔案支援**：可同時選取多個檔案進行批次操作
-* 🖱️ **拖曳檔案至群組**：支援從外部或群組間拖曳檔案進行分組
-* 🗑️ **彈性檔案移除**：提供垃圾桶圖示和右鍵選單移除檔案
-* 🖱️ **智慧點選操作**：檔案項目單擊僅選取，避免誤觸開啟
-
-### 📂 批次檔案操作
-
-* 🔓 **批次開啟/關閉**：一鍵開啟或關閉群組內所有檔案
-* 🗂️ **多選檔案管理**：支援多選檔案的開啟、關閉和移除操作
-* 🎯 **跨群組檔案移動**：透過多選和拖曳實現檔案跨群組管理
-
-### 📋 便利輔助功能
-
-* 📄 **複製檔名**：快速複製檔案名稱到剪貼簿
-* 📁 **複製相對路徑**：複製檔案相對於工作區的路徑
-* 📍 **複製絕對路徑**：複製檔案的完整系統路徑
-* 🔍 **檔案總管整合**：「在檔案總管顯示」功能
-
-### UI 範例圖
-
-> ![功能截圖](assets/demo.png)
+**VirtualTabs** is a simple and practical VS Code extension that provides file grouping management, helping you organize and switch between files more efficiently in multi-file development environments. Through the "Virtual Tabs" TreeView in the sidebar, it supports auto-grouping, custom group management, drag-and-drop, and advanced batch operations for multiple files.
 
 ---
 
-## ⚠️ 注意事項
+## ✨ Main Features
 
-* 只有「目前已開啟檔案」群組會自動同步 VS Code 的開啟/關閉狀態
-* 其他自訂群組需透過拖曳或手動操作來加入/移除檔案
-* 自動副檔名分群功能需先選取特定群組才能執行
-* 內建群組不支援「一鍵開啟/關閉」功能（因檔案已在開啟狀態）
+### 🌍 Multi-language Support
 
----
+* 🈳 **Full Internationalization**: Supports Traditional Chinese, Simplified Chinese, and English
+* 🔄 **Automatic Language Detection**: Switches UI language based on VS Code locale
+* 🛠️ **Extensible Architecture**: Community contributions for more languages are welcome
 
-## ⚙️ 安裝與使用
+### 🗂️ Group Management
 
-### 📦 從 VS Code Marketplace 安裝
+* 📁 **Built-in "Currently Open Files" Group**: Automatically syncs with VS Code's open/close file state
+* 🆕 **Custom Group Creation**: Add, delete, rename, and duplicate custom groups
+* 🔄 **Group Duplication**: Duplicate both built-in and custom groups
+* ⚡ **Auto Group by Extension**: Automatically group files by extension within a selected group
 
-1. 開啟 VS Code
-2. 前往擴展面板（`Ctrl+Shift+X` 或 `Cmd+Shift+X`）
-3. 搜尋 "VirtualTabs"
-4. 點擊安裝
+### 🌲 TreeView Interactive UI
 
-### 🎯 基本使用方式
+* 🖱️ **Multi-file Selection**: Select multiple files for batch operations
+* 🖱️ **Drag Files to Groups**: Drag files from outside or between groups for organization
+* 🗑️ **Flexible File Removal**: Remove files via trash icon or context menu
+* 🖱️ **Smart Click Behavior**: Single-click selects file items only, preventing accidental opening
 
-1. **檢視群組**：在 Explorer 側邊欄找到「Virtual Tabs」視圖
-2. **新增群組**：右鍵點選現有群組 → 選擇「新增分群」
-3. **加入檔案**：將檔案從檔案總管拖曳到群組中
-4. **批次操作**：使用 `Ctrl`/`Cmd` 多選檔案進行批次操作
-5. **自動分群**：選取群組後右鍵選擇「自動依副檔名分群」
-6. **語言切換**：在 VS Code 設定中變更 "locale" 設定即可切換介面語言
+### 📂 Batch File Operations
 
-### 🌍 語言設定
+* 🔓 **Batch Open/Close**: Open or close all files in a group with one click
+* 🗂️ **Multi-file Management**: Batch open, close, or remove selected files
+* 🎯 **Cross-group File Movement**: Move files between groups via multi-select and drag-and-drop
 
-VirtualTabs 支援以下語言：
+### 📋 Handy Utilities
 
-* **English** (`en`) - 英文介面
-* **繁體中文** (`zh-tw`) - Traditional Chinese
-* **简体中文** (`zh-cn`) - Simplified Chinese
+* 📄 **Copy File Name**: Quickly copy file names to clipboard
+* 📁 **Copy Relative Path**: Copy file path relative to workspace
+* 📍 **Copy Absolute Path**: Copy full system path of a file
+* 🔍 **File Explorer Integration**: "Show in File Explorer" feature
 
-**切換語言步驟**：
-1. 開啟 VS Code 設定 (`Cmd+,` 或 `Ctrl+,`)
-2. 搜尋 "locale"
-3. 選擇想要的語言代碼
-4. 重新載入 VS Code
+### UI Example
 
-詳細的國際化說明請參閱 **[國際化指南 (I18N.md)](./I18N.md)**。
-
-### 🧑‍💻 開發者相關
-
-如需進行擴展開發或貢獻程式碼，請參閱 **[開發指南 (DEVELOPMENT.md)](./DEVELOPMENT.md)**，其中包含：
-
-* 完整的開發環境建置步驟
-* 調試配置與技巧
-* 專案架構與模組說明
-* 資料流程圖解
-* 常見開發問題解決
-* 發布與部署流程
+> ![Feature Screenshot](assets/demo.png)
 
 ---
 
-## ❓ 常見問題（FAQ）
+## ⚠️ Notes
 
-### 為什麼沒有看到「Virtual Tabs」視圖？
-
-請確認：
-
-1. 擴充套件已正確安裝並啟用
-2. 查看左側邊欄的 Explorer 分頁中是否有「Virtual Tabs」區塊
-3. 開發模式下需按 `F5` 啟動 Extension Development Host
-
-### 如何進行批次檔案操作？
-
-1. **多選檔案**：按住 `Ctrl`（Windows/Linux）或 `Cmd`（macOS）點選多個檔案
-2. **右鍵操作**：對選取的檔案按右鍵，選擇對應操作
-3. **支援功能**：開啟選取的檔案、關閉選取的檔案、從群組移除選取的檔案
-
-### 自動副檔名分群如何使用？
-
-1. 先選取一個包含檔案的群組（點選群組名稱）
-2. 右鍵選擇「自動依副檔名分群」
-3. 系統會依據選取群組內檔案的副檔名建立多個「[自動] .副檔名」群組
-
-### 如何移除群組中的單一檔案？
-
-針對自訂群組中的檔案：
-
-1. **垃圾桶圖示**：點擊檔案項目旁的垃圾桶圖示
-2. **右鍵選單**：在檔案項目上右鍵選擇「從群組中移除檔案」
-
-注意：內建群組「目前已開啟檔案」不支援單一檔案移除。
-
-### 拖曳功能不工作怎麼辦？
-
-確認以下事項：
-
-1. 目標必須是群組（資料夾圖示），不是檔案
-2. 支援從檔案總管拖曳檔案到群組
-3. 支援群組間檔案拖曳移動
-4. 檢查 VS Code 版本是否符合需求（^1.75.0）
-
-### 群組資料會保存嗎？
-
-是的，群組資料會自動保存在：
-
-* VS Code 的 `workspaceState` 中
-* 每次操作後自動儲存
-* 重新開啟工作區時自動載入
+* Only the "Currently Open Files" group auto-syncs with VS Code's open/close state
+* Other custom groups require manual or drag-and-drop file management
+* Auto group by extension requires a specific group to be selected first
+* Built-in group does not support "one-click open/close" (since files are already open)
 
 ---
 
-## 🔧 未來規劃
+## ⚙️ Installation & Usage
 
-* 🧩 自訂分群條件（路徑/關鍵字/正則等）
-* ⚙️ 設定介面：可視化配置分群邏輯
-* 🔁 儲存/還原分群設定
+### 📦 Install from VS Code Marketplace
+
+1. Open VS Code
+2. Go to Extensions panel (`Ctrl+Shift+X` or `Cmd+Shift+X`)
+3. Search for "VirtualTabs"
+4. Click Install
+
+### 🎯 Basic Usage
+
+1. **View Groups**: Find the "Virtual Tabs" view in the Explorer sidebar
+2. **Add Group**: Right-click an existing group → Select "Add Group"
+3. **Add Files**: Drag files from File Explorer into a group
+4. **Batch Operations**: Use `Ctrl`/`Cmd` to multi-select files for batch actions
+5. **Auto Grouping**: Right-click a group and select "Auto Group by Extension"
+6. **Switch Language**: Change the "locale" setting in VS Code to switch UI language
+
+### 🌍 Language Settings
+
+VirtualTabs supports the following languages:
+
+* **English** (`en`)
+* **Traditional Chinese** (`zh-tw`)
+* **Simplified Chinese** (`zh-cn`)
+
+**How to switch language:**
+1. Open VS Code settings (`Cmd+,` or `Ctrl+,`)
+2. Search for "locale"
+3. Choose your desired language code
+4. Reload VS Code
+
+For detailed internationalization instructions, see **[I18N Guide (I18N.md)](./I18N.md)**.
+
+### 🧑‍💻 For Developers
+
+If you want to contribute or develop the extension, see **[Development Guide (DEVELOPMENT.md)](./DEVELOPMENT.md)**, which includes:
+
+* Complete environment setup steps
+* Debugging configuration and tips
+* Project structure and module overview
+* Data flow diagrams
+* Common development troubleshooting
+* Publishing and deployment process
 
 ---
 
-## 🤝 貢獻方式
+## ❓ FAQ
 
-我們非常歡迎社群貢獻！參與方式：
+### Why can't I see the "Virtual Tabs" view?
 
-### 🐛 問題回報
+Please check:
 
-* 前往 [GitHub Issues](https://github.com/winterdrive/virtual-tabs/issues)
-* 提供詳細的錯誤描述和重現步驟
-* 附上 VS Code 版本和作業系統資訊
+1. The extension is properly installed and enabled
+2. The "Virtual Tabs" section appears in the Explorer sidebar
+3. In development mode, press `F5` to launch Extension Development Host
 
-### ✨ 功能建議
+### How do I perform batch file operations?
 
-* 在 Issues 中標記為 `enhancement`
-* 描述功能需求和使用場景
-* 歡迎提供 UI/UX 設計建議
+1. **Multi-select files**: Hold `Ctrl` (Windows/Linux) or `Cmd` (macOS) and click multiple files
+2. **Right-click actions**: Right-click selected files and choose the desired operation
+3. **Supported actions**: Open, close, or remove selected files from group
 
-### 🔧 程式碼貢獻
+### How does auto group by extension work?
 
-1. Fork 專案並建立功能分支
-2. 遵循現有的程式碼風格（TypeScript + 繁體中文註解）
-3. 確保 TypeScript 編譯無錯誤
-4. 在 Extension Development Host 中測試功能
-5. 提交 Pull Request 並詳細說明變更
+1. Select a group containing files (click the group name)
+2. Right-click and choose "Auto Group by Extension"
+3. The system will create multiple "[Auto] .extension" groups based on file extensions in the selected group
 
-### 📖 文件改進
+### How do I remove a single file from a group?
 
-* 發現文件錯誤或不清楚的描述
-* 補充使用案例和最佳實務
-* 翻譯文件為其他語言
+For custom groups:
 
-詳細的開發指南請參閱 **[DEVELOPMENT.md](./DEVELOPMENT.md)**。
+1. **Trash icon**: Click the trash icon next to the file item
+2. **Context menu**: Right-click the file item and select "Remove from Group"
+
+Note: The built-in group "Currently Open Files" does not support removing individual files.
+
+### What if drag-and-drop doesn't work?
+
+Check the following:
+
+1. The target must be a group (folder icon), not a file
+2. Dragging files from File Explorer into a group is supported
+3. Dragging files between groups is supported
+4. Make sure your VS Code version meets the requirement (^1.75.0)
+
+### Are group data saved?
+
+Yes, group data are automatically saved in:
+
+* VS Code's `workspaceState`
+* Automatically saved after each operation
+* Automatically loaded when reopening the workspace
 
 ---
 
-## 📄 授權條款
+## 🔧 Roadmap
 
-本專案採用 MIT 授權條款，您可以自由：
+* 🧩 Custom grouping rules (by path/keyword/regex, etc.)
+* ⚙️ Settings UI: Visual configuration for grouping logic
+* 🔁 Save/restore grouping settings
 
-* ✅ 商業使用
-* ✅ 修改程式碼
-* ✅ 散布與再發佈
-* ✅ 私人使用
+---
 
-唯須保留原始授權聲明。詳見 [LICENSE](./LICENSE) 檔案。
+## 🤝 How to Contribute
+
+We welcome community contributions! Ways to participate:
+
+### 🐛 Report Issues
+
+* Go to [GitHub Issues](https://github.com/winterdrive/virtual-tabs/issues)
+* Provide detailed error description and reproduction steps
+* Include your VS Code version and OS info
+
+### ✨ Feature Suggestions
+
+* Mark as `enhancement` in Issues
+* Describe your feature request and use case
+* UI/UX suggestions are welcome
+
+### 🔧 Code Contributions
+
+1. Fork the project and create a feature branch
+2. Follow the existing code style (TypeScript + Traditional Chinese comments)
+3. Ensure TypeScript compiles without errors
+4. Test features in Extension Development Host
+5. Submit a Pull Request with detailed description
+
+### 📖 Documentation Improvements
+
+* Report unclear or incorrect documentation
+* Add usage examples and best practices
+* Translate docs into other languages
+
+For detailed development guide, see **[DEVELOPMENT.md](./DEVELOPMENT.md)**.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. You are free to:
+
+* ✅ Use commercially
+* ✅ Modify the code
+* ✅ Distribute and re-publish
+* ✅ Use privately
+
+You must retain the original license notice. See [LICENSE](./LICENSE) for details.
 
 ---

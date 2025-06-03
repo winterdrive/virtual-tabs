@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 
-// 群組資料結構
+// Group data structure
 export interface TempGroup {
     name: string;
-    files?: string[]; // 群組內檔案 URI 陣列
-    readonly builtIn?: boolean; // 標記是否為內建群組
-    auto?: boolean; // 標記是否為自動分群
+    files?: string[]; // Array of file URIs in the group
+    readonly builtIn?: boolean; // Mark if this is a built-in group
+    auto?: boolean; // Mark if this is an auto group
 }

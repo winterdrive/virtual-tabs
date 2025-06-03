@@ -3,12 +3,12 @@ import { TempGroup } from './types';
 import { TempFileItem, TempFolderItem } from './treeItems';
 import { I18n } from './i18n';
 
-// TreeDataProvider 實作
+// TreeDataProvider implementation
 export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null> = new vscode.EventEmitter();
     readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-    // 記憶體內部群組陣列
+    // In-memory group array
     public groups: TempGroup[] = [];
     private context?: vscode.ExtensionContext;
     private treeView?: vscode.TreeView<vscode.TreeItem>;
@@ -21,22 +21,22 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         }
     }
 
-    // 儲存 TreeView 參考，以便管理多選功能
+    // Save TreeView reference for multi-select management
     setTreeView(treeView: vscode.TreeView<vscode.TreeItem>): void {
         this.treeView = treeView;
     }
 
-    // 取得目前已選取的檔案項目
+    // Get currently selected file items
     getSelectedFileItems(): TempFileItem[] {
         if (!this.treeView) return [];
 
-        // 確保 selection 是一個陣列
+        // Ensure selection is an array
         const selection = this.treeView.selection || [];
 
-        // 過濾出所有 TempFileItem 型別的項目
+        // Filter all items of type TempFileItem
         const fileItems = selection.filter((item): item is TempFileItem => item instanceof TempFileItem);
 
-        // 記錄一下取得的選取項目數量，以便除錯
+        // Log the number of selected items for debugging
         if (fileItems.length > 0) {
             console.log(`已選取 ${fileItems.length} 個檔案項目`);
         }
@@ -60,7 +60,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     private initBuiltInGroup() {
-        // 取得所有已開啟的編輯器檔案
+        // Get all open editor files
         const openUris = vscode.window.tabGroups.all
             .flatMap(g => g.tabs)
             .map(tab => (tab.input as any)?.uri as vscode.Uri)
@@ -70,7 +70,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     refresh(): void {
-        // 重新同步 built-in 群組內容
+        // Resync built-in group content
         const builtIn = this.groups.find(g => g.builtIn);
         if (builtIn) {
             const openUris = vscode.window.tabGroups.all
@@ -85,7 +85,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     addGroup() {
-        // 自動產生名稱 New Group 1, 2, ...
+        // Auto-generate name: New Group 1, 2, ...
         let idx = 1;
         let name = I18n.getGroupName(undefined, idx);
         while (this.groups.some(g => g.name === name)) {
@@ -97,7 +97,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     removeGroup(idx: number) {
-        // 不能刪除 built-in 群組
+        // Cannot remove built-in group
         if (this.groups[idx]?.builtIn) return;
         this.groups.splice(idx, 1);
         this.refresh();
@@ -107,7 +107,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         const group = this.groups[groupIdx];
         if (!group) return;
         if (!group.files) group.files = [];
-        // 避免重複
+        // Avoid duplicates
         for (const uri of uris) {
             if (!group.files.includes(uri)) {
                 group.files.push(uri);
@@ -116,10 +116,10 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.refresh();
     }
 
-    // 一鍵開啟群組內所有檔案（僅適用於自訂群組）
+    // One-click open all files in group (only for custom groups)
     async openAllFilesInGroup(idx: number) {
         const group = this.groups[idx];
-        // 檢查是否為內建群組，若是則不執行
+        // Skip if built-in group
         if (!group || group.builtIn) return;
 
         const files = group.files || [];
@@ -155,10 +155,10 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         }
     }
 
-    // 一鍵關閉群組內所有檔案（僅適用於自訂群組）
+    // One-click close all files in group (only for custom groups)
     async closeAllFilesInGroup(idx: number) {
         const group = this.groups[idx];
-        // 檢查是否為內建群組，若是則不執行
+        // Skip if built-in group
         if (!group || group.builtIn) return;
 
         const files = group.files || [];
@@ -302,7 +302,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         const group = this.groups[groupIdx];
         if (!group || !group.files || fileItems.length === 0) return;
 
-        // 先確認所有選取的檔案都在指定群組中
+        // 確保所有選取的檔案都在指定群組中
         const uriStrings = fileItems.map(item => item.uri.toString());
 
         // 從指定群組中移除檔案
@@ -321,11 +321,11 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     /**
-     * 只針對使用者選取的群組內檔案進行副檔名自動分群。
-     * 若未選取群組則顯示提示，不再 fallback 為所有已開啟檔案。
+     * Only auto-group by extension for files in the user-selected group.
+     * If no group is selected, show a prompt. No longer fallback to all open files.
      */
     addAutoGroupsByExt() {
-        // 僅允許單一群組選取
+        // Only allow single group selection
         if (!this.treeView || this.treeView.selection.length !== 1 || !(this.treeView.selection[0] instanceof TempFolderItem)) {
             vscode.window.showInformationMessage(I18n.getMessage('message.pleaseSelectGroup'));
             return;
@@ -336,7 +336,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             vscode.window.showInformationMessage(I18n.getMessage('message.noFilesToGroup'));
             return;
         }
-        // 依副檔名分群
+        // Group by extension
         const extMap: Record<string, string[]> = {};
         for (const uriStr of group.files) {
             try {
@@ -346,9 +346,9 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                 extMap[ext].push(uriStr);
             } catch { }
         }
-        // 移除舊的自動分群
+        // Remove old auto groups
         this.groups = this.groups.filter((g, idx) => g.builtIn || !g.auto || idx === groupIdx);
-        // 在原群組位置插入自動分群
+        // Insert auto groups at the original group position
         const newGroups = Object.entries(extMap).map(([ext, files]) => ({
             name: I18n.getAutoGroupName(ext),
             files,

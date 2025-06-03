@@ -1,19 +1,19 @@
-// 匯出所有模組，方便其他檔案引用
+// Export all modules for convenient import in other files
 
-// 資料類型
+// Data types
 export * from './types';
 
-// 樹狀視圖項目
+// Tree view items
 export * from './treeItems';
 
-// 資料提供者
+// Data provider
 export * from './provider';
 
-// 拖曳控制器
+// Drag-and-drop controller
 export * from './dragAndDrop';
 
-// 指令註冊
+// Command registration
 export * from './commands';
 
-// 國際化工具
+// Internationalization utility
 export * from './i18n';
