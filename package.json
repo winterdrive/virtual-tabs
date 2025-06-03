@@ -88,11 +88,19 @@
                 { "command": "virtualTabs.removeSelectedFilesFromGroup", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1", "group": "navigation@3" },
                 { "command": "deleteFile", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount <= 1", "group": "navigation@4" },
 
+                { "command": "virtualTabs.openSelectedFiles", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1", "group": "navigation@1" },
+                { "command": "virtualTabs.closeSelectedFiles", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1", "group": "navigation@2" },
+
                 { "command": "virtualTabs.copyFileName", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@10" },
                 { "command": "virtualTabs.copyRelativePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@11" },
                 { "command": "copyFilePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@12" },
                 { "command": "revealFileInOS", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@13" },
-                { "command": "virtualTabs.removeFileFromGroup", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "inline@3" }
+                { "command": "virtualTabs.removeFileFromGroup", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "inline@3" },
+
+                { "command": "virtualTabs.copyFileName", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@10" },
+                { "command": "virtualTabs.copyRelativePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@11" },
+                { "command": "copyFilePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@12" },
+                { "command": "revealFileInOS", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@13" }
             ],
             "editor/title/context": [
                 { "command": "virtualTabs.addSelectedFilesToGroup", "when": "editorFocus", "group": "navigation" }
