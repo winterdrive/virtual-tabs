@@ -1,0 +1,24 @@
+# 忽略 node_modules
+node_modules/
+
+# 忽略 VS Code 設定
+.vscode/
+
+# idea忽略 IDE 設定
+.idea/
+
+# 忽略打包產物（保留 dist/ 以供發佈）
+out/
+*.vsix
+
+# 忽略說明文件與開發文件
+DEVELOPMENT.md
+readme.md
+I18N.md
+
+# TypeScript 設定
+tsconfig.json
+
+# 其他暫存或備份檔
+*.log
+*.tmp
