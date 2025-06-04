@@ -4,11 +4,11 @@
     "view.virtualTabsContainer.title": "Virtual Tabs",
     "view.virtualTabsView.name": "Virtual Tabs",
     "command.addGroup.title": "Add Group",
-    "command.removeGroup.title": "🗑",
+    "command.removeGroup.title": "Remove",
     "command.renameGroup.title": "Rename Group",
     "command.duplicateGroup.title": "Duplicate Group",
     "command.duplicateBuiltInGroup.title": "Duplicate Group (Currently Open Files)",
-    "command.refreshBuiltInGroup.title": "🔄",
+    "command.refreshBuiltInGroup.title": "Refresh",
     "command.autoGroupByExt.title": "Auto Group by Extension",
     "command.addSelectedFilesToGroup.title": "Add Selected Files to Group",
     "command.openAllFiles.title": "Open All Group Files",
@@ -21,5 +21,5 @@
     "command.copyFileName.title": "Copy File Name",
     "command.copyRelativePath.title": "Copy Relative Path",
     "command.revealFileInOS.title": "Reveal in File Explorer",
-    "command.removeFileFromGroup.title": "🗑"
+    "command.removeFileFromGroup.title": "Remove"
 }

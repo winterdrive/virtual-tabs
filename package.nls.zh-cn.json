@@ -4,11 +4,11 @@
     "view.virtualTabsContainer.title": "Virtual Tabs",
     "view.virtualTabsView.name": "Virtual Tabs",
     "command.addGroup.title": "添加分组",
-    "command.removeGroup.title": "🗑",
+    "command.removeGroup.title": "移除分组",
     "command.renameGroup.title": "重命名群组",
     "command.duplicateGroup.title": "复制群组",
     "command.duplicateBuiltInGroup.title": "复制群组（当前已打开文件）",
-    "command.refreshBuiltInGroup.title": "🔄",
+    "command.refreshBuiltInGroup.title": "刷新群组",
     "command.autoGroupByExt.title": "按扩展名自动分组",
     "command.addSelectedFilesToGroup.title": "将选中文件添加到群组",
     "command.openAllFiles.title": "打开所有群组文件",
@@ -21,5 +21,5 @@
     "command.copyFileName.title": "复制文件名",
     "command.copyRelativePath.title": "复制相对路径",
     "command.revealFileInOS.title": "在文件管理器中显示",
-    "command.removeFileFromGroup.title": "🗑"
+    "command.removeFileFromGroup.title": "移除文件"
 }
