@@ -13,7 +13,6 @@ out/
 
 # 忽略說明文件與開發文件
 DEVELOPMENT.md
-readme.md
 I18N.md
 
 # TypeScript 設定
