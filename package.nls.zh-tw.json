@@ -1,6 +1,6 @@
 {
-    "extension.displayName": "VirtualTabs",
-    "extension.description": "將開啟的標籤頁和檔案分群顯示在側邊欄中，讓使用 GitHub Copilot 時更容易新增檔案",
+    "extension.displayName": "VirtualTabs - 自訂檔案群組",
+    "extension.description": "建立不受資料夾結構限制的自訂檔案群組。依副檔名、專案脈絡或任何條件，在側邊欄樹狀視圖中整理開啟的檔案。",
     "view.virtualTabsContainer.title": "Virtual Tabs",
     "view.virtualTabsView.name": "Virtual Tabs",
     "command.addGroup.title": "新增分群",

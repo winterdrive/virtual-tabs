@@ -1,6 +1,6 @@
 {
-    "extension.displayName": "VirtualTabs",
-    "extension.description": "Group open tabs and files in a sidebar view, making it easier to add files with GitHub Copilot",
+    "extension.displayName": "VirtualTabs - Custom File Groups",
+    "extension.description": "Create custom file groups independent of folder structure. Organize open files by extension, project context, or any criteria in a convenient sidebar tree view.",
     "view.virtualTabsContainer.title": "Virtual Tabs",
     "view.virtualTabsView.name": "Virtual Tabs",
     "command.addGroup.title": "Add Group",

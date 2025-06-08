@@ -1,211 +1,154 @@
-# VirtualTabs – Organize Open Files into Smart Groups
+# VirtualTabs – Custom File Grouping Beyond Folder Limitations
 
-> **Group your open files by custom rules or file extensions to keep your VS Code workspace organized.**
+> **Break free from directory structure constraints. Organize files by logic or rules to boost development productivity.**
 
 ## 🔍 Project Overview
 
-**VirtualTabs** is a simple and practical VS Code extension that provides file grouping management, helping you organize and switch between files more efficiently in multi-file development environments. Through the "Virtual Tabs" TreeView in the sidebar, it supports auto-grouping, custom group management, drag-and-drop, and advanced batch operations for multiple files.
+**VirtualTabs** is a VS Code extension that enables you to create temporary file groups based on logical relationships—independent of the original folder structure. Organize files by type, module, development phase, or custom rules. A tree view in the sidebar helps you build a flexible and efficient workflow.
+
+## 🎯 Use Cases
+
+* **Cross-directory management**: Group related files scattered across different folders (e.g., config, styles, source code).
+* **Feature-based grouping**: Group files by module or functionality for focused development.
+* **Project task switching**: Create quick-access file sets for specific tasks or sprints.
+* **Code review**: Centralize files for review to improve efficiency.
+* **Teaching & reference**: Build curated examples or materials without folder interference.
 
 ---
 
-## ✨ Main Features
+## ✨ Key Features
 
-### 🌍 Multi-language Support
+### 📁 Group Management
 
-* 🈳 **Full Internationalization**: Supports Traditional Chinese, Simplified Chinese, and English
-* 🔄 **Automatic Language Detection**: Switches UI language based on VS Code locale
-* 🛠️ **Extensible Architecture**: Community contributions for more languages are welcome
+* Add, delete, rename, and duplicate custom groups
+* Built-in "Currently Open Files" group auto-syncs with VS Code tabs
+* Auto-group files by extension (requires group selection)
 
-### 🗂️ Group Management
+### 🖱️ User Interface
 
-* 📁 **Built-in "Currently Open Files" Group**: Automatically syncs with VS Code's open/close file state
-* 🆕 **Custom Group Creation**: Add, delete, rename, and duplicate custom groups
-* 🔄 **Group Duplication**: Duplicate both built-in and custom groups
-* ⚡ **Auto Group by Extension**: Automatically group files by extension within a selected group
+* Multi-file selection and batch actions (open / close / remove)
+* Drag and drop files into or between groups
+* Smart click: single-click to select only, avoiding accidental file opening
+* Flexible file removal (via icon or context menu)
 
-### 🌲 TreeView Interactive UI
-
-* 🖱️ **Multi-file Selection**: Select multiple files for batch operations
-* 🖱️ **Drag Files to Groups**: Drag files from outside or between groups for organization
-* 🗑️ **Flexible File Removal**: Remove files via trash icon or context menu
-* 🖱️ **Smart Click Behavior**: Single-click selects file items only, preventing accidental opening
-
-### 📂 Batch File Operations
-
-* 🔓 **Batch Open/Close**: Open or close all files in a group with one click
-* 🗂️ **Multi-file Management**: Batch open, close, or remove selected files
-* 🎯 **Cross-group File Movement**: Move files between groups via multi-select and drag-and-drop
-
-### 📋 Handy Utilities
-
-* 📄 **Copy File Name**: Quickly copy file names to clipboard
-* 📁 **Copy Relative Path**: Copy file path relative to workspace
-* 📍 **Copy Absolute Path**: Copy full system path of a file
-* 🔍 **File Explorer Integration**: "Show in File Explorer" feature
-
-### UI Example
+### 📄 UI Example
 
 > ![Feature Screenshot](assets/demo.png)
 
+### 🛠️ Utilities
+
+* Copy filename, relative path, or absolute path
+* Open containing folder
+* Auto-save group state (saved in `workspaceState`)
+
+### 🌍 Multilingual Support
+
+* Supports Traditional Chinese, Simplified Chinese, and English
+* Automatically switches based on VS Code locale
+* Community contributions for new languages are welcome
+
 ---
 
-## ⚠️ Notes
+## 🔄 Workflow Diagram
 
-* Only the "Currently Open Files" group auto-syncs with VS Code's open/close state
-* Other custom groups require manual or drag-and-drop file management
-* Auto group by extension requires a specific group to be selected first
-* Built-in group does not support "one-click open/close" (since files are already open)
+```mermaid
+graph TD
+    A["Original Directory Files"] --> B["VirtualTabs Groups"]
+    B --> C["Custom Groups"]
+    C --> D["Quick Switching & Actions"]
+```
 
 ---
 
-## ⚙️ Installation & Usage
+## 🚀 Why Choose VirtualTabs?
 
-### 📦 Install from VS Code Marketplace
+### 🧩 Solves Common Workflow Issues
+
+In large projects, related files are often scattered:
+
+* Config files → root directory
+* Styles → `styles`
+* Logic → `src` / `components`
+* Tests → `tests` / `__tests__`
+
+With VirtualTabs, you can:
+✅ Create logical groups instantly
+✅ Avoid changing original file locations
+✅ Switch file sets based on task or context
+
+---
+
+## 📦 Installation & Usage
+
+### Installation
 
 1. Open VS Code
-2. Go to Extensions panel (`Ctrl+Shift+X` or `Cmd+Shift+X`)
-3. Search for "VirtualTabs"
-4. Click Install
+2. Press `Ctrl+Shift+X` (or `Cmd+Shift+X`)
+3. Search for `VirtualTabs` and install
 
-### 🎯 Basic Usage
+### Basic Usage
 
-1. **View Groups**: Find the "Virtual Tabs" view in the Explorer sidebar
-2. **Add Group**: Right-click an existing group → Select "Add Group"
-3. **Add Files**: Drag files from File Explorer into a group
-4. **Batch Operations**: Use `Ctrl`/`Cmd` to multi-select files for batch actions
-5. **Auto Grouping**: Right-click a group and select "Auto Group by Extension"
-6. **Switch Language**: Change the "locale" setting in VS Code to switch UI language
+* Click the "Virtual Tabs" icon in the Activity Bar to open the view
+* Right-click to create a new group
+* Drag files into the group
+* Right-click group → Auto-group by extension
+* Change VS Code locale to switch language
 
-### 🌍 Language Settings
+---
 
-VirtualTabs supports the following languages:
+## 🌍 Language Support
 
-* **English** (`en`)
-* **Traditional Chinese** (`zh-tw`)
-* **Simplified Chinese** (`zh-cn`)
+Supported languages:
 
-**How to switch language:**
-1. Open VS Code settings (`Cmd+,` or `Ctrl+,`)
-2. Search for "locale"
-3. Choose your desired language code
-4. Reload VS Code
-
-For detailed internationalization instructions, see **[I18N Guide (I18N.md)](./I18N.md)**.
-
-### 🧑‍💻 For Developers
-
-If you want to contribute or develop the extension, see **[Development Guide (DEVELOPMENT.md)](./DEVELOPMENT.md)**, which includes:
-
-* Complete environment setup steps
-* Debugging configuration and tips
-* Project structure and module overview
-* Data flow diagrams
-* Common development troubleshooting
-* Publishing and deployment process
+* Traditional Chinese (zh-tw)
+* Simplified Chinese (zh-cn)
+* English (en)
 
 ---
 
 ## ❓ FAQ
 
-### Why can't I see the "Virtual Tabs" view?
+### Q1: I don’t see the Virtual Tabs view?
 
 Please check:
 
-1. The extension is properly installed and enabled
-2. The "Virtual Tabs" section appears in the Explorer sidebar
-3. In development mode, press `F5` to launch Extension Development Host
+* The extension is enabled
+* Your VS Code version is above 1.75
+* VirtualTabs has its own icon in the Activity Bar—look for it on the left
 
-### How do I perform batch file operations?
+### Q2: How does Auto Group by Extension work?
 
-1. **Multi-select files**: Hold `Ctrl` (Windows/Linux) or `Cmd` (macOS) and click multiple files
-2. **Right-click actions**: Right-click selected files and choose the desired operation
-3. **Supported actions**: Open, close, or remove selected files from group
-
-### How does auto group by extension work?
-
-1. Select a group containing files (click the group name)
+1. Select a group to activate it
 2. Right-click and choose "Auto Group by Extension"
-3. The system will create multiple "[Auto] .extension" groups based on file extensions in the selected group
-
-### How do I remove a single file from a group?
-
-For custom groups:
-
-1. **Trash icon**: Click the trash icon next to the file item
-2. **Context menu**: Right-click the file item and select "Remove from Group"
-
-Note: The built-in group "Currently Open Files" does not support removing individual files.
-
-### What if drag-and-drop doesn't work?
-
-Check the following:
-
-1. The target must be a group (folder icon), not a file
-2. Dragging files from File Explorer into a group is supported
-3. Dragging files between groups is supported
-4. Make sure your VS Code version meets the requirement (^1.75.0)
-
-### Are group data saved?
-
-Yes, group data are automatically saved in:
-
-* VS Code's `workspaceState`
-* Automatically saved after each operation
-* Automatically loaded when reopening the workspace
+3. The system will create sub-groups based on file extensions (e.g., `.js`, `.css`)
 
 ---
 
-## 🔧 Roadmap
+## 🔧 Developer Section
 
-* 🧩 Custom grouping rules (by path/keyword/regex, etc.)
-* ⚙️ Settings UI: Visual configuration for grouping logic
-* 🔁 Save/restore grouping settings
+Interested in contributing? Check out [DEVELOPMENT.md](./DEVELOPMENT.md), which includes:
 
----
-
-## 🤝 How to Contribute
-
-We welcome community contributions! Ways to participate:
-
-### 🐛 Report Issues
-
-* Go to [GitHub Issues](https://github.com/winterdrive/virtual-tabs/issues)
-* Provide detailed error description and reproduction steps
-* Include your VS Code version and OS info
-
-### ✨ Feature Suggestions
-
-* Mark as `enhancement` in Issues
-* Describe your feature request and use case
-* UI/UX suggestions are welcome
-
-### 🔧 Code Contributions
-
-1. Fork the project and create a feature branch
-2. Follow the existing code style (TypeScript + Traditional Chinese comments)
-3. Ensure TypeScript compiles without errors
-4. Test features in Extension Development Host
-5. Submit a Pull Request with detailed description
-
-### 📖 Documentation Improvements
-
-* Report unclear or incorrect documentation
-* Add usage examples and best practices
-* Translate docs into other languages
-
-For detailed development guide, see **[DEVELOPMENT.md](./DEVELOPMENT.md)**.
+* Environment setup
+* Debugging & publishing guide
+* Module structure & data flow diagrams
+* Common error troubleshooting
 
 ---
 
-## 📄 License
+## 🤝 Contributing
 
-This project is licensed under the MIT License. You are free to:
+We welcome community contributions:
 
-* ✅ Use commercially
-* ✅ Modify the code
-* ✅ Distribute and re-publish
-* ✅ Use privately
+* 🐞 Bug reports → [GitHub Issues](https://github.com/winterdrive/virtual-tabs/issues)
+* ✨ Feature requests and UI suggestions
+* 🔧 Code contributions (please fork and submit a PR)
 
-You must retain the original license notice. See [LICENSE](./LICENSE) for details.
+---
+
+## 📅 Roadmap
+
+* 🔍 Support custom grouping rules (by file path / keyword / regex)
+* ⚙️ Visual configuration interface (group logic visualization)
+* 🔁 Group setting save/restore feature
 
 ---

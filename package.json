@@ -2,18 +2,26 @@
     "name": "virtual-tabs",
     "displayName": "%extension.displayName%",
     "description": "%extension.description%",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
+    
     "categories": [
         "Other"
     ],
     "keywords": [
+        "file management",
         "tabs",
         "group",
+        "temporary groups",
+        "custom groups",
         "sidebar",
+        "project organization",
+        "workspace groups",
+        "virtual tabs",
         "productivity",
-        "virtual tabs"
+        "file extension",
+        "tree view"
     ],
     "repository": {
         "type": "git",
