@@ -214,16 +214,16 @@ virtual-tabs/
 
 ```mermaid
 flowchart TD
-    Extension Startup --> Initialize Provider
-    Initialize Provider --> Load workspaceState
-    Load workspaceState --> Create Built-in Group
-    Create Built-in Group --> Register TreeView
-    Register TreeView --> Register Drag-and-Drop Controller
-    Register Drag-and-Drop Controller --> Register Commands
-    User Actions --> Command Execution
-    Command Execution --> Update Group Data
-    Update Group Data --> Save workspaceState
-    Save workspaceState --> Trigger UI Refresh
+    A[Extension Startup] --> B[Initialize Provider]
+    B --> C[Load workspaceState]
+    C --> D[Create Built-in Group]
+    D --> E[Register TreeView]
+    E --> F[Register Drag-and-Drop Controller]
+    F --> G[Register Commands]
+    H[User Actions] --> I[Command Execution]
+    I --> J[Update Group Data]
+    J --> K[Save workspaceState]
+    K --> L[Trigger UI Refresh]
 ```
 
 ---
