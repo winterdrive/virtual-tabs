@@ -50,17 +50,6 @@
 
 ---
 
-## 🔄 Workflow Diagram
-
-```mermaid
-graph TD
-    A["Original Directory Files"] --> B["VirtualTabs Groups"]
-    B --> C["Custom Groups"]
-    C --> D["Quick Switching & Actions"]
-```
-
----
-
 ## 🚀 Why Choose VirtualTabs?
 
 ### 🧩 Solves Common Workflow Issues
@@ -73,8 +62,11 @@ In large projects, related files are often scattered:
 * Tests → `tests` / `__tests__`
 
 With VirtualTabs, you can:
+
 ✅ Create logical groups instantly
+
 ✅ Avoid changing original file locations
+
 ✅ Switch file sets based on task or context
 
 This is especially crucial when working on tasks that span multiple issues or when coordinating with AI development partners, where related files can be numerous and dispersed.
