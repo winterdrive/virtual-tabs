@@ -1,6 +1,6 @@
 # VirtualTabs
 
-> VirtualTabs is a VS Code extension for creating custom file groups independent of folder structure. It allows logical organization of files (e.g., by type, module, task) to enhance development productivity via a sidebar tree view. This makes it particularly well-suited for managing collections of files related to specific tasks, features, or bug fixes, especially when these files are scattered across multiple issues or directories.
+> VirtualTabs is a VS Code extension for creating custom file groups independent of folder structure. It allows logical organization of files (e.g., by type, module, task) to enhance development productivity via a sidebar tree view. This makes it particularly well-suited for managing collections of files related to specific tasks, features, or bug fixes—especially when these files are scattered across multiple issues or directories, or when streamlining workflows for AI-assisted development.
 
 ## Core Functionality & Source Code
 
