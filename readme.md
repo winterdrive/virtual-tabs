@@ -13,6 +13,7 @@
 * **Project task switching**: Create quick-access file sets for specific tasks or sprints.
 * **Code review**: Centralize files for review to improve efficiency.
 * **Teaching & reference**: Build curated examples or materials without folder interference.
+* **AI Collaboration & Multi-Issue Tracking**: Efficiently manage and group files scattered across various directories that are relevant to multiple development issues or when collaborating with AI coding assistants, ensuring all necessary context is at your fingertips.
 
 ---
 
@@ -75,6 +76,8 @@ With VirtualTabs, you can:
 ✅ Create logical groups instantly
 ✅ Avoid changing original file locations
 ✅ Switch file sets based on task or context
+
+This is especially crucial when working on tasks that span multiple issues or when coordinating with AI development partners, where related files can be numerous and dispersed.
 
 ---
 
