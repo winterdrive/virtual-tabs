@@ -21,7 +21,14 @@
         "virtual tabs",
         "productivity",
         "file extension",
-        "tree view"
+        "tree view",
+        "AI",
+        "Copilot",
+        "LLM",
+        "Code Assistant",
+        "AI Assistant",
+        "GPT",
+        "AI pair programming"
     ],
     "repository": {
         "type": "git",
