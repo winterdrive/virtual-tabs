@@ -287,6 +287,44 @@ flowchart TD
 3. User and UI interactions (click, drag, command) update data in `provider`.
 4. After group data updates, it is automatically saved to `workspaceState` and triggers UI refresh.
 
+### Auto-Sync of Open Files Group
+
+To ensure the "Currently Open Files" group in VirtualTabs always reflects the actual open editors in VS Code, the extension implements an automatic synchronization mechanism. This design guarantees that any file opened or closed in the editor is immediately reflected in the Virtual Tabs tree view, without requiring manual refresh.
+
+**Trigger Events:**
+
+| Scenario                        | Implementation (API)                        |
+|---------------------------------|---------------------------------------------|
+| Editor opens a new file         | `vscode.window.onDidChangeVisibleTextEditors` |
+| Editor closes a file            | `vscode.window.onDidChangeVisibleTextEditors` |
+| Virtual Tabs view becomes visible | `TreeView.onDidChangeVisibility`           |
+| Custom commands (e.g. group ops) | Direct call to `provider.refresh()`        |
+
+**Design Logic:**
+
+* On extension activation, a listener is registered for `onDidChangeVisibleTextEditors`.
+* Whenever the set of visible editors changes (open/close), the provider's `refresh()` method is called.
+* The `refresh()` method updates the built-in group by collecting all currently open file URIs and triggers a UI update.
+* This ensures the "Currently Open Files" group is always in sync with the editor state.
+
+**Key Implementation Points:**
+
+* No manual refresh is needed; the tree view updates automatically.
+* The mechanism is robust to all tab open/close actions, including group switching.
+* Custom commands that affect group content should also call `refresh()` to maintain consistency.
+
+**Relevant API Usage Example:**
+
+```typescript
+context.subscriptions.push(
+    vscode.window.onDidChangeVisibleTextEditors(() => {
+        provider.refresh();
+    })
+);
+```
+
+The `refresh()` method in the provider typically collects all open file URIs from the editor and updates the built-in group accordingly, then fires a tree data change event to update the UI.
+
 ### Data Structure Concept Diagram
 
 ```mermaid

@@ -44,6 +44,14 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    // Listen for editor file open/close events to auto-refresh the tree view
+    context.subscriptions.push(
+        vscode.window.onDidChangeVisibleTextEditors(() => {
+            console.log('Visible text editors changed, refreshing tree view...');
+            provider.refresh();
+        })
+    );
+
     // Register all commands
     registerCommands(context, provider);
 }
