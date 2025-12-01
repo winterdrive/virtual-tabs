@@ -2,7 +2,7 @@
     "name": "virtual-tabs",
     "displayName": "%extension.displayName%",
     "description": "%extension.description%",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
     "categories": [
@@ -168,6 +168,26 @@
             {
                 "command": "virtualTabs.autoGroupByModifiedDate",
                 "title": "%command.autoGroupByModifiedDate.title%"
+            },
+            {
+                "command": "virtualTabs.addBookmark",
+                "title": "%command.addBookmark.title%"
+            },
+            {
+                "command": "virtualTabs.jumpToBookmark",
+                "title": "%command.jumpToBookmark.title%"
+            },
+            {
+                "command": "virtualTabs.editBookmarkLabel",
+                "title": "%command.editBookmarkLabel.title%"
+            },
+            {
+                "command": "virtualTabs.editBookmarkDescription",
+                "title": "%command.editBookmarkDescription.title%"
+            },
+            {
+                "command": "virtualTabs.removeBookmark",
+                "title": "%command.removeBookmark.title%"
             }
         ],
         "submenus": [
@@ -312,20 +332,28 @@
                     "command": "revealFileInOS",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
                     "group": "navigation@13"
+                },
+                {
+                    "command": "virtualTabs.editBookmarkLabel",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsBookmark",
+                    "group": "edit@1"
+                },
+                {
+                    "command": "virtualTabs.editBookmarkDescription",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsBookmark",
+                    "group": "edit@2"
+                },
+                {
+                    "command": "virtualTabs.removeBookmark",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsBookmark",
+                    "group": "inline@1"
                 }
             ],
-            "editor/title/context": [
+            "editor/context": [
                 {
-                    "command": "virtualTabs.addSelectedFilesToGroup",
-                    "when": "editorFocus",
-                    "group": "navigation"
-                }
-            ],
-            "explorer/context": [
-                {
-                    "command": "virtualTabs.addSelectedFilesToGroup",
-                    "when": "explorerResourceIsFolder || explorerResourceIsRoot",
-                    "group": "navigation"
+                    "command": "virtualTabs.addBookmark",
+                    "when": "editorTextFocus",
+                    "group": "virtualTabs"
                 }
             ],
             "virtualTabs.sortMenu": [

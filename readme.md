@@ -1,19 +1,21 @@
 # VirtualTabs – Custom File Grouping Beyond Folder Limitations
 
-> **Break free from directory structure constraints. Organize files by logic or rules to boost development productivity.**
+> **Don't just save tabs—organize your workflow. Build AI-ready contexts and logical file groups beyond folder limits.**
 
 ## 🔍 Project Overview
 
-**VirtualTabs** is a VS Code extension that enables you to create temporary file groups based on logical relationships—independent of the original folder structure. Organize files by type, module, development phase, or custom rules. A tree view in the sidebar helps you build a flexible and efficient workflow.
+**VirtualTabs** is more than just a tab manager—it's a **logical file organizer** for VS Code. It enables you to create virtual workspaces for your tasks, allowing you to **sort, categorize, and structure** related files regardless of their physical location.
+
+Whether you're switching between complex tasks or **curating context for AI coding assistants**, VirtualTabs helps you keep your focus sharp and your workspace organized.
 
 ## 🎯 Use Cases
 
 * **Cross-directory management**: Group related files scattered across different folders (e.g., config, styles, source code).
 * **Feature-based grouping**: Group files by module or functionality for focused development.
+* **AI Context Curation**: Create precise file sets to provide clean context for LLMs and AI assistants.
 * **Project task switching**: Create quick-access file sets for specific tasks or sprints.
 * **Code review**: Centralize files for review to improve efficiency.
 * **Teaching & reference**: Build curated examples or materials without folder interference.
-* **AI Collaboration & Multi-Issue Tracking**: Efficiently manage and group files scattered across various directories that are relevant to multiple development issues or when collaborating with AI coding assistants, ensuring all necessary context is at your fingertips.
 
 ---
 
@@ -25,6 +27,7 @@
 * Built-in "Currently Open Files" group auto-syncs with VS Code tabs
 * Auto-group files by extension (requires group selection)
 * **NEW** Auto-group by modification date (Today, Yesterday, This Week, etc.)
+* **NEW** Task-Oriented Bookmarks: Mark specific lines of code within your groups
 
 ### 🖱️ User Interface
 
@@ -45,9 +48,21 @@
 * **Smart grouping**: Each group remembers its own sort preference
 * **Auto-group by date**: Automatically organize files into time-based categories
 
-### 📄 UI Example
+### 🔖 Task-Oriented Bookmarks (v0.2.0)
 
-> ![Feature Screenshot](assets/demo.png)
+* **Smart Flow**: Right-click any line to add a bookmark instantly. No input boxes, no friction.
+* **Context-Aware**: Bookmarks are tied to your VirtualTabs groups, keeping your task context complete.
+* **Quick Navigation**: Jump to specific lines of code directly from the VirtualTabs sidebar.
+* **Smart Labeling**: Automatically uses line content or selection as the bookmark label.
+
+### 📄 UI Examples
+
+#### Context Management & Bookmarks
+>
+> *Organize files by task, not folder. Perfect for curating context for AI assistants.*
+> *Mark key logic points within your groups. Jump straight to the code that matters.*
+>
+> ![VirtualTabs Demo](assets/demo_020.png)
 
 ### 🛠️ Utilities
 
@@ -76,13 +91,21 @@ In large projects, related files are often scattered:
 
 With VirtualTabs, you can:
 
-✅ Create logical groups instantly
+✅ **Create logical groups instantly**
 
-✅ Avoid changing original file locations
+✅ **Sort & Auto-group** files to find what you need (unlike simple tab savers)
 
-✅ Switch file sets based on task or context
+✅ **Switch contexts** based on task, not just open files
 
-This is especially crucial when working on tasks that span multiple issues or when coordinating with AI development partners, where related files can be numerous and dispersed.
+### 🤖 Perfect for AI-Assisted Coding
+
+In the era of Copilot and LLMs, **Context is King**. VirtualTabs is the ultimate tool for managing AI context:
+
+* **Curated Context**: Instead of dumping your entire repo into an AI chat, create a VirtualTabs group with *only* the relevant files.
+* **Reduced Noise**: Help AI focus by isolating the exact files needed for a feature or bug fix.
+* **Persistent Prompts**: Keep a "Context Group" for specific ongoing tasks. When you come back to the task, your AI context is ready to go.
+
+> *"VirtualTabs helps me define the exact boundary of what the AI should look at."*
 
 ---
 
@@ -120,6 +143,13 @@ This is especially crucial when working on tasks that span multiple issues or wh
   * Modified: Last Week
   * Modified: This Month
   * Modified: Older
+
+**Using Bookmarks (v0.2.0):**
+
+* Right-click any line in the editor → "Add Bookmark to VirtualTabs"
+* The bookmark appears under the file in the VirtualTabs sidebar
+* Click the bookmark to jump to that exact line
+* Right-click the bookmark in the sidebar to Edit Label or Description
 
 * Change VS Code locale to switch language
 
@@ -175,6 +205,12 @@ We welcome community contributions:
 ---
 
 ## 📅 Roadmap
+
+### ✅ v0.2.0 (Released)
+
+* ✅ **Task-Oriented Bookmarks**: Add, edit, and jump to bookmarks within groups
+* ✅ **Smart Flow**: Frictionless bookmark creation
+* ✅ **Enhanced UI**: Improved tree view for bookmarks and files
 
 ### ✅ v0.1.0 (Released)
 

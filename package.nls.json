@@ -29,5 +29,10 @@
     "command.toggleSortOrder.title": "Toggle Sort Order (Asc/Desc)",
     "command.clearSort.title": "Clear Sorting (Insertion Order)",
     "command.autoGroupByModifiedDate.title": "Auto Group by Modified Date",
+    "command.addBookmark.title": "Add Bookmark to Group",
+    "command.jumpToBookmark.title": "Jump to Bookmark",
+    "command.editBookmarkLabel.title": "Edit Bookmark Label",
+    "command.editBookmarkDescription.title": "Edit Bookmark Description",
+    "command.removeBookmark.title": "Remove Bookmark",
     "submenu.sortFiles.label": "Sort Files"
 }

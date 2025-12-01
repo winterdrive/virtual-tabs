@@ -11,7 +11,7 @@ import { I18n } from './i18n';
 export async function activate(context: vscode.ExtensionContext) {
     // Initialize i18n
     await I18n.initialize(context);
-    
+
     // Listen for language configuration changes
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(async (e) => {
@@ -21,7 +21,7 @@ export async function activate(context: vscode.ExtensionContext) {
             }
         })
     );
-    
+
     // Create Provider and DragAndDrop controller
     const provider = new TempFoldersProvider(context);
     const dragAndDropController = new TempFoldersDragAndDropController(provider);
@@ -33,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
         canSelectMany: true
     });
     context.subscriptions.push(treeView);
-    
+
     // Pass the tree view to the provider for selection management
     provider.setTreeView(treeView);
 

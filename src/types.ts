@@ -23,6 +23,49 @@ export type DateGroup =
     | 'thisMonth'
     | 'older';
 
+/**
+ * VirtualTabs Bookmark (v0.2.0)
+ * Represents a specific code location within a file in a group
+ */
+export interface VTBookmark {
+    /**
+     * Unique identifier
+     */
+    id: string;
+
+    /**
+     * Line number (0-based)
+     */
+    line: number;
+
+    /**
+     * Character position (0-based, optional)
+     */
+    character?: number;
+
+    /**
+     * Bookmark label (required)
+     * Example: "Login function", "TODO: Refactor", "Bug location"
+     */
+    label: string;
+
+    /**
+     * Detailed description (optional)
+     * Example: "This logic needs optimization, current complexity is O(n²)"
+     */
+    description?: string;
+
+    /**
+     * Creation timestamp
+     */
+    created: number;
+
+    /**
+     * Last modified timestamp (optional)
+     */
+    modified?: number;
+}
+
 // Group data structure
 export interface TempGroup {
     id?: string;                        // Unique identifier (for future use)
@@ -37,6 +80,14 @@ export interface TempGroup {
     groupBy?: GroupByCriteria;          // Grouping preference
     autoGroupType?: 'extension' | 'modifiedDate';  // Type of auto-grouping
     parentGroupId?: string;             // Parent group ID (for nested groups)
+
+    // Bookmarks (v0.2.0)
+    /**
+     * Bookmarks within this group
+     * Key: File URI string
+     * Value: Array of bookmarks for that file
+     */
+    bookmarks?: Record<string, VTBookmark[]>;
 
     // Reserved for future use
     metadata?: Record<string, any>;     // For bookmarks, colors, etc.

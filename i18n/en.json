@@ -27,5 +27,21 @@
     "dateGroup.thisWeek": "Modified: This Week",
     "dateGroup.lastWeek": "Modified: Last Week",
     "dateGroup.thisMonth": "Modified: This Month",
-    "dateGroup.older": "Modified: Older"
+    "dateGroup.older": "Modified: Older",
+    "bookmark.noActiveEditor": "No active editor",
+    "bookmark.noGroups": "No custom groups available. Please create a group first.",
+    "bookmark.selectGroup": "Select a group to add the bookmark",
+    "bookmark.enterLabel": "Enter bookmark label",
+    "bookmark.labelPlaceholder": "e.g., Login Logic, TODO: Fix Bug",
+    "bookmark.labelRequired": "Label is required",
+    "bookmark.enterDescription": "Enter description (optional)",
+    "bookmark.descriptionPlaceholder": "Detailed description of this bookmark",
+    "bookmark.added": "Bookmark '{0}' added to group '{1}'",
+    "bookmark.jumpFailed": "Failed to jump to bookmark: {0}",
+    "bookmark.editLabel": "Edit bookmark label",
+    "bookmark.labelUpdated": "Bookmark label updated to '{0}'",
+    "bookmark.editDescription": "Edit bookmark description",
+    "bookmark.descriptionUpdated": "Bookmark description updated",
+    "bookmark.confirmRemove": "Are you sure you want to remove bookmark '{0}'?",
+    "bookmark.removed": "Bookmark '{0}' removed"
 }

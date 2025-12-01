@@ -29,5 +29,10 @@
     "command.toggleSortOrder.title": "切换排序方向（升序/降序）",
     "command.clearSort.title": "清除排序（按添加顺序）",
     "command.autoGroupByModifiedDate.title": "按修改日期自动分组",
+    "command.addBookmark.title": "添加书签到分组",
+    "command.jumpToBookmark.title": "跳转到书签",
+    "command.editBookmarkLabel.title": "编辑书签标签",
+    "command.editBookmarkDescription.title": "编辑书签描述",
+    "command.removeBookmark.title": "移除书签",
     "submenu.sortFiles.label": "排序文件"
 }

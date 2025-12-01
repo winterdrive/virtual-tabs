@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { TempGroup, SortCriteria, DateGroup } from './types';
-import { TempFileItem, TempFolderItem } from './treeItems';
+import { TempFileItem, TempFolderItem, BookmarkItem } from './treeItems';
 import { I18n } from './i18n';
 import { FileSorter } from './sorting';
 import { FileGrouper } from './grouping';
+import { BookmarkManager } from './bookmarks';
 
 // TreeDataProvider implementation
 export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -56,7 +57,12 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (this.context) {
             const saved = this.context.workspaceState.get<TempGroup[]>('virtualTabs.groups');
             if (saved && Array.isArray(saved)) {
-                this.groups = saved;
+                // Migration: Ensure v0.2.0 compatibility
+                // Add empty bookmarks object for groups that don't have one
+                this.groups = saved.map(group => ({
+                    ...group,
+                    bookmarks: group.bookmarks || {}
+                }));
             }
         }
     }
@@ -429,7 +435,9 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (!element) {
             // 顯示所有群組，帶入 groupIdx
             return this.groups.map((g, idx) => new TempFolderItem(g.name, idx, g.builtIn));
-        }        // 若是群組節點，顯示檔案
+        }
+
+        // 若是群組節點，顯示檔案
         if (element instanceof TempFolderItem) {
             const group = this.groups[element.groupIdx];
             if (group && group.files && group.files.length > 0) {
@@ -442,10 +450,33 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
 
                 return sortedFiles.map(uriStr => {
                     const uri = vscode.Uri.parse(uriStr);
-                    return new TempFileItem(uri, element.groupIdx, group.builtIn);
+                    const fileItem = new TempFileItem(uri, element.groupIdx, group.builtIn);
+
+                    // Check if file has bookmarks (v0.2.0)
+                    const bookmarks = BookmarkManager.getBookmarksForFile(group, uriStr);
+                    if (bookmarks.length > 0) {
+                        // Set file as expandable if it has bookmarks
+                        fileItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+                    }
+
+                    return fileItem;
                 });
             }
         }
+
+        // 若是檔案節點，顯示書籤 (v0.2.0)
+        if (element instanceof TempFileItem) {
+            const group = this.groups[element.groupIdx];
+            const bookmarks = BookmarkManager.getBookmarksForFile(
+                group,
+                element.uri.toString()
+            );
+
+            return bookmarks.map(bookmark =>
+                new BookmarkItem(bookmark, element.uri, element.groupIdx)
+            );
+        }
+
         return [];
     }
 }

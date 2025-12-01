@@ -27,5 +27,21 @@
     "dateGroup.thisWeek": "修改時間：本週",
     "dateGroup.lastWeek": "修改時間：上週",
     "dateGroup.thisMonth": "修改時間：本月",
-    "dateGroup.older": "修改時間：更早"
+    "dateGroup.older": "修改時間：更早",
+    "bookmark.noActiveEditor": "沒有作用中的編輯器",
+    "bookmark.noGroups": "沒有可用的自訂群組，請先建立群組。",
+    "bookmark.selectGroup": "選擇要加入書籤的群組",
+    "bookmark.enterLabel": "輸入書籤標籤",
+    "bookmark.labelPlaceholder": "例如：登入邏輯、TODO: 修復 Bug",
+    "bookmark.labelRequired": "標籤為必填",
+    "bookmark.enterDescription": "輸入描述（選填）",
+    "bookmark.descriptionPlaceholder": "此書籤的詳細描述",
+    "bookmark.added": "書籤 '{0}' 已加入群組 '{1}'",
+    "bookmark.jumpFailed": "無法跳轉到書籤：{0}",
+    "bookmark.editLabel": "編輯書籤標籤",
+    "bookmark.labelUpdated": "書籤標籤已更新為 '{0}'",
+    "bookmark.editDescription": "編輯書籤描述",
+    "bookmark.descriptionUpdated": "書籤描述已更新",
+    "bookmark.confirmRemove": "確定要移除書籤 '{0}' 嗎？",
+    "bookmark.removed": "書籤 '{0}' 已移除"
 }

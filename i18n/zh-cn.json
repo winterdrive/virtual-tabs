@@ -27,5 +27,21 @@
     "dateGroup.thisWeek": "修改时间：本周",
     "dateGroup.lastWeek": "修改时间：上周",
     "dateGroup.thisMonth": "修改时间：本月",
-    "dateGroup.older": "修改时间：更早"
+    "dateGroup.older": "修改时间：更早",
+    "bookmark.noActiveEditor": "没有活动的编辑器",
+    "bookmark.noGroups": "没有可用的自定义群组，请先创建群组。",
+    "bookmark.selectGroup": "选择要添加书签的群组",
+    "bookmark.enterLabel": "输入书签标签",
+    "bookmark.labelPlaceholder": "例如：登录逻辑、TODO: 修复 Bug",
+    "bookmark.labelRequired": "标签为必填",
+    "bookmark.enterDescription": "输入描述（选填）",
+    "bookmark.descriptionPlaceholder": "此书签的详细描述",
+    "bookmark.added": "书签 '{0}' 已添加到群组 '{1}'",
+    "bookmark.jumpFailed": "无法跳转到书签：{0}",
+    "bookmark.editLabel": "编辑书签标签",
+    "bookmark.labelUpdated": "书签标签已更新为 '{0}'",
+    "bookmark.editDescription": "编辑书签描述",
+    "bookmark.descriptionUpdated": "书签描述已更新",
+    "bookmark.confirmRemove": "确定要移除书签 '{0}' 吗？",
+    "bookmark.removed": "书签 '{0}' 已移除"
 }

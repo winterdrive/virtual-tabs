@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { TempFoldersProvider } from './provider';
-import { TempFileItem, TempFolderItem } from './treeItems';
+import { TempFileItem, TempFolderItem, BookmarkItem } from './treeItems';
 import { I18n } from './i18n';
+import { BookmarkManager } from './bookmarks';
 
 // VirtualTabs command registration
 export function registerCommands(context: vscode.ExtensionContext, provider: TempFoldersProvider): void {
@@ -273,4 +274,230 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.autoGroupByModifiedDate', () => {
         provider.autoGroupByModifiedDate();
     }));
+
+    // ========== Bookmark Commands (v0.2.0) ==========
+
+    // Add bookmark to group (Smart Flow)
+    context.subscriptions.push(
+        vscode.commands.registerCommand('virtualTabs.addBookmark', async () => {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                vscode.window.showErrorMessage(I18n.getMessage('bookmark.noActiveEditor'));
+                return;
+            }
+
+            const fileUri = editor.document.uri.toString();
+            const position = editor.selection.active;
+
+            // 1. Smart Labeling: Line {n} ({code snippet})
+            const lineContent = editor.document.lineAt(position.line).text.trim();
+            let snippet = lineContent;
+            if (snippet.length > 20) {
+                snippet = snippet.substring(0, 20) + '...';
+            }
+
+            let label = `Line ${position.line + 1}`;
+            if (snippet) {
+                label += ` (${snippet})`;
+            }
+
+            // 2. Smart Grouping
+            const customGroups = provider.groups.filter(g => !g.builtIn);
+
+            // Scenario: No custom groups available
+            if (customGroups.length === 0) {
+                const createOption = I18n.getMessage('command.addGroup.title'); // Reuse "Add Group" string or similar
+                const selection = await vscode.window.showInformationMessage(
+                    "No custom groups found. Create a new group?",
+                    "Create Group"
+                );
+
+                if (selection === "Create Group") {
+                    await provider.addGroup();
+                    // After creating, we could try to continue, but simpler to ask user to try again
+                    // or we could auto-select the new group. Let's just return for now to keep it simple.
+                }
+                return;
+            }
+
+            // Find groups containing this file
+            const containingGroups = customGroups.filter(g => g.files?.includes(fileUri));
+
+            let targetGroup;
+
+            if (containingGroups.length === 1) {
+                // Scenario A: File belongs to exactly one group -> Auto pick
+                targetGroup = containingGroups[0];
+            } else if (containingGroups.length > 1) {
+                // Scenario B: File belongs to multiple groups -> Ask user
+                const groupItems = containingGroups.map(g => ({
+                    label: g.name,
+                    group: g
+                }));
+                const selected = await vscode.window.showQuickPick(groupItems, {
+                    placeHolder: I18n.getMessage('bookmark.selectGroup')
+                });
+                if (!selected) return;
+                targetGroup = selected.group;
+            } else {
+                // Scenario C: File not in any group -> Ask user to pick any group
+                const groupItems = customGroups.map(g => ({
+                    label: g.name,
+                    group: g
+                }));
+                const selected = await vscode.window.showQuickPick(groupItems, {
+                    placeHolder: I18n.getMessage('bookmark.selectGroup')
+                });
+                if (!selected) return;
+                targetGroup = selected.group;
+
+                // Add file to group automatically
+                if (!targetGroup.files) targetGroup.files = [];
+                targetGroup.files.push(fileUri);
+            }
+
+            // 3. Create Bookmark (No Input Box!)
+            const bookmark = BookmarkManager.createBookmark(
+                position.line,
+                label,
+                position.character,
+                '' // Description empty by default
+            );
+
+            BookmarkManager.addBookmarkToGroup(targetGroup, fileUri, bookmark);
+            provider.refresh();
+
+            // Subtle feedback
+            vscode.window.setStatusBarMessage(`Bookmark added to ${targetGroup.name}`, 3000);
+        })
+    );
+
+    // Jump to bookmark
+    context.subscriptions.push(
+        vscode.commands.registerCommand('virtualTabs.jumpToBookmark', async (item: BookmarkItem) => {
+            if (!(item instanceof BookmarkItem)) {
+                return;
+            }
+
+            try {
+                const document = await vscode.workspace.openTextDocument(item.fileUri);
+                const editor = await vscode.window.showTextDocument(document);
+
+                const position = new vscode.Position(
+                    item.bookmark.line,
+                    item.bookmark.character || 0
+                );
+
+                const range = new vscode.Range(position, position);
+
+                // Jump and scroll to center
+                editor.selection = new vscode.Selection(position, position);
+                editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+
+                // Removed highlight logic based on user feedback
+
+            } catch (error) {
+                vscode.window.showErrorMessage(
+                    I18n.getMessage('bookmark.jumpFailed', String(error))
+                );
+            }
+        })
+    );
+
+    // Edit bookmark label
+    context.subscriptions.push(
+        vscode.commands.registerCommand('virtualTabs.editBookmarkLabel', async (item: BookmarkItem) => {
+            if (!(item instanceof BookmarkItem)) {
+                return;
+            }
+
+            const newLabel = await vscode.window.showInputBox({
+                prompt: I18n.getMessage('bookmark.editLabel'),
+                value: item.bookmark.label,
+                validateInput: (value) => {
+                    if (!value.trim()) {
+                        return I18n.getMessage('bookmark.labelRequired');
+                    }
+                    return null;
+                }
+            });
+
+            if (!newLabel || newLabel === item.bookmark.label) {
+                return;
+            }
+
+            const group = provider.groups[item.groupIdx];
+            const updatedBookmark = BookmarkManager.updateLabel(item.bookmark, newLabel);
+
+            BookmarkManager.updateBookmark(
+                group,
+                item.fileUri.toString(),
+                item.bookmark.id,
+                updatedBookmark
+            );
+
+            provider.refresh();
+            vscode.window.showInformationMessage(
+                I18n.getMessage('bookmark.labelUpdated', newLabel)
+            );
+        })
+    );
+
+    // Edit bookmark description
+    context.subscriptions.push(
+        vscode.commands.registerCommand('virtualTabs.editBookmarkDescription', async (item: BookmarkItem) => {
+            if (!(item instanceof BookmarkItem)) {
+                return;
+            }
+
+            const newDescription = await vscode.window.showInputBox({
+                prompt: I18n.getMessage('bookmark.editDescription'),
+                value: item.bookmark.description || '',
+                placeHolder: I18n.getMessage('bookmark.descriptionPlaceholder')
+            });
+
+            if (newDescription === undefined) {
+                return; // User cancelled
+            }
+
+            const group = provider.groups[item.groupIdx];
+            const updatedBookmark = BookmarkManager.updateDescription(
+                item.bookmark,
+                newDescription || undefined
+            );
+
+            BookmarkManager.updateBookmark(
+                group,
+                item.fileUri.toString(),
+                item.bookmark.id,
+                updatedBookmark
+            );
+
+            provider.refresh();
+            vscode.window.showInformationMessage(
+                I18n.getMessage('bookmark.descriptionUpdated')
+            );
+        })
+    );
+
+    // Remove bookmark
+    context.subscriptions.push(
+        vscode.commands.registerCommand('virtualTabs.removeBookmark', async (item: BookmarkItem) => {
+            if (!(item instanceof BookmarkItem)) {
+                return;
+            }
+
+            const group = provider.groups[item.groupIdx];
+            const removed = BookmarkManager.removeBookmark(
+                group,
+                item.fileUri.toString(),
+                item.bookmark.id
+            );
+
+            if (removed) {
+                provider.refresh();
+                vscode.window.setStatusBarMessage(`Bookmark removed`, 3000);
+            }
+        })
+    );
 }
