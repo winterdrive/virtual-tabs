@@ -21,5 +21,13 @@
     "command.copyFileName.title": "複製檔名",
     "command.copyRelativePath.title": "複製相對路徑",
     "command.revealFileInOS.title": "在檔案總管顯示",
-    "command.removeFileFromGroup.title": "移除檔案"
+    "command.removeFileFromGroup.title": "移除檔案",
+    "command.sortByName.title": "依名稱排序",
+    "command.sortByPath.title": "依路徑排序",
+    "command.sortByExtension.title": "依副檔名排序",
+    "command.sortByModified.title": "依修改時間排列",
+    "command.toggleSortOrder.title": "切換排序方向（升序/降序）",
+    "command.clearSort.title": "清除排序（依加入順序）",
+    "command.autoGroupByModifiedDate.title": "依修改日期自動分組",
+    "submenu.sortFiles.label": "排序檔案"
 }

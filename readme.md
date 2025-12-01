@@ -24,6 +24,7 @@
 * Add, delete, rename, and duplicate custom groups
 * Built-in "Currently Open Files" group auto-syncs with VS Code tabs
 * Auto-group files by extension (requires group selection)
+* **NEW** Auto-group by modification date (Today, Yesterday, This Week, etc.)
 
 ### 🖱️ User Interface
 
@@ -31,6 +32,18 @@
 * Drag and drop files into or between groups
 * Smart click: single-click to select only, avoiding accidental file opening
 * Flexible file removal (via icon or context menu)
+
+### 📊 File Organization (v0.1.0)
+
+* **Sort files within groups**:
+  * Sort by name (A-Z with natural numeric ordering)
+  * Sort by path
+  * Sort by file extension
+  * Sort by last modified time
+  * Toggle ascending/descending order
+  * Clear sorting to restore insertion order
+* **Smart grouping**: Each group remembers its own sort preference
+* **Auto-group by date**: Automatically organize files into time-based categories
 
 ### 📄 UI Example
 
@@ -83,10 +96,31 @@ This is especially crucial when working on tasks that span multiple issues or wh
 
 ### Basic Usage
 
+**Creating and Managing Groups:**
+
 * Click the "Virtual Tabs" icon in the Activity Bar to open the view
 * Right-click to create a new group
 * Drag files into the group
 * Right-click group → Auto-group by extension
+
+**Sorting Files (v0.1.0):**
+
+* Right-click a group → "Sort Files" submenu
+* Choose sorting method: Name, Path, Extension, or Modified Time
+* Use "Toggle Sort Order" to switch between ascending/descending
+* Use "Clear Sorting" to restore original insertion order
+
+**Auto-Group by Date (v0.1.0):**
+
+* Right-click a group → "Auto Group by Modified Date"
+* Files will be automatically organized into sub-groups:
+  * Modified: Today
+  * Modified: Yesterday
+  * Modified: This Week
+  * Modified: Last Week
+  * Modified: This Month
+  * Modified: Older
+
 * Change VS Code locale to switch language
 
 ---
@@ -142,8 +176,11 @@ We welcome community contributions:
 
 ## 📅 Roadmap
 
-* 🔍 Support custom grouping rules (by file path / keyword / regex)
-* ⚙️ Visual configuration interface (group logic visualization)
-* 🔁 Group setting save/restore feature
+### ✅ v0.1.0 (Released)
+
+* ✅ File sorting within groups (name, path, extension, modified time)
+* ✅ Auto-group by modification date
+* ✅ Per-group sort preferences
+* ✅ Full i18n support (EN, ZH-TW, ZH-CN)
 
 ---

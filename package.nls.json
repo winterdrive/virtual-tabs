@@ -21,5 +21,13 @@
     "command.copyFileName.title": "Copy File Name",
     "command.copyRelativePath.title": "Copy Relative Path",
     "command.revealFileInOS.title": "Reveal in File Explorer",
-    "command.removeFileFromGroup.title": "Remove"
+    "command.removeFileFromGroup.title": "Remove",
+    "command.sortByName.title": "Sort by Name",
+    "command.sortByPath.title": "Sort by Path",
+    "command.sortByExtension.title": "Sort by Extension",
+    "command.sortByModified.title": "Sort by Modified Time",
+    "command.toggleSortOrder.title": "Toggle Sort Order (Asc/Desc)",
+    "command.clearSort.title": "Clear Sorting (Insertion Order)",
+    "command.autoGroupByModifiedDate.title": "Auto Group by Modified Date",
+    "submenu.sortFiles.label": "Sort Files"
 }

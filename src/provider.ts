@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import { TempGroup } from './types';
+import { TempGroup, SortCriteria, DateGroup } from './types';
 import { TempFileItem, TempFolderItem } from './treeItems';
 import { I18n } from './i18n';
+import { FileSorter } from './sorting';
+import { FileGrouper } from './grouping';
 
 // TreeDataProvider implementation
 export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -358,6 +360,67 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.refresh();
     }
 
+    /**
+     * Set sort preference for a group
+     * @param groupIdx Group index
+     * @param criteria Sort criteria
+     * @param order Sort order (ascending or descending)
+     */
+    setSortPreference(groupIdx: number, criteria: SortCriteria, order: 'asc' | 'desc' = 'asc') {
+        const group = this.groups[groupIdx];
+        if (!group) return;
+
+        group.sortBy = criteria;
+        group.sortOrder = order;
+        this.refresh();
+    }
+
+    /**
+     * Auto-group files by modified date
+     * Only works on user-selected group
+     */
+    autoGroupByModifiedDate() {
+        // Only allow single group selection
+        if (!this.treeView || this.treeView.selection.length !== 1 || !(this.treeView.selection[0] instanceof TempFolderItem)) {
+            vscode.window.showInformationMessage(I18n.getMessage('message.pleaseSelectGroup'));
+            return;
+        }
+
+        const groupIdx = (this.treeView.selection[0] as TempFolderItem).groupIdx;
+        const group = this.groups[groupIdx];
+
+        if (!group || !group.files || group.files.length === 0) {
+            vscode.window.showInformationMessage(I18n.getMessage('message.noFilesToGroup'));
+            return;
+        }
+
+        // Group by modified date
+        const dateGroups = FileGrouper.groupByModifiedDate(group.files);
+
+        // Remove old auto groups
+        this.groups = this.groups.filter((g, idx) => g.builtIn || !g.auto || idx === groupIdx);
+
+        // Create new date-based groups
+        const newGroups: TempGroup[] = [];
+        const dateOrder: DateGroup[] = ['today', 'yesterday', 'thisWeek', 'lastWeek', 'thisMonth', 'older'];
+
+        for (const dateGroup of dateOrder) {
+            const files = dateGroups.get(dateGroup);
+            if (files && files.length > 0) {
+                newGroups.push({
+                    name: FileGrouper.getDateGroupLabel(dateGroup, I18n),
+                    files,
+                    auto: true,
+                    autoGroupType: 'modifiedDate',
+                    parentGroupId: group.id
+                });
+            }
+        }
+
+        this.groups.splice(groupIdx + 1, 0, ...newGroups);
+        this.refresh();
+    }
+
     getTreeItem(element: vscode.TreeItem): vscode.TreeItem {
         return element;
     }
@@ -370,7 +433,14 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (element instanceof TempFolderItem) {
             const group = this.groups[element.groupIdx];
             if (group && group.files && group.files.length > 0) {
-                return group.files.map(uriStr => {
+                // Apply sorting before rendering
+                const sortedFiles = FileSorter.sortFiles(
+                    group.files,
+                    group.sortBy || 'none',
+                    group.sortOrder || 'asc'
+                );
+
+                return sortedFiles.map(uriStr => {
                     const uri = vscode.Uri.parse(uriStr);
                     return new TempFileItem(uri, element.groupIdx, group.builtIn);
                 });

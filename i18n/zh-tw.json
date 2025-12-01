@@ -3,7 +3,6 @@
     "group.newGroupName": "新群組",
     "group.autoGroupPrefix": "[自動]",
     "group.copyPostfix": "複本",
-    
     "message.pleaseSelectGroup": "請先選取一個群組再進行自動分群。",
     "message.noFilesToGroup": "選取的群組沒有檔案可分群。",
     "message.builtInGroupNotSupported": "「目前已開啟檔案」群組不需要使用此功能",
@@ -12,18 +11,21 @@
     "message.groupNotFound": "群組不存在或沒有檔案",
     "message.fileNotInGroup": "檔案不在指定的群組中",
     "message.fileRemovedFromGroup": "已從「{0}」群組移除檔案",
-    
     "input.groupNamePrompt": "請輸入新的群組名稱",
     "input.groupNameError.empty": "名稱不可為空",
     "input.groupNameError.duplicate": "名稱重複",
-    
     "progress.openingFiles": "正在開啟群組「{0}」中的檔案",
     "progress.closingFiles": "正在關閉群組「{0}」中的檔案",
     "progress.openingSelected": "正在開啟選取的檔案",
     "progress.closingSelected": "正在關閉選取的檔案",
     "progress.fileCount": "({0}/{1})",
-    
     "error.cannotOpenFile": "無法開啟檔案 {0}",
     "error.cannotCloseTab": "無法關閉標籤頁",
-    "error.cannotParseUri": "無法解析 URI: {0}"
+    "error.cannotParseUri": "無法解析 URI: {0}",
+    "dateGroup.today": "修改時間：今天",
+    "dateGroup.yesterday": "修改時間：昨天",
+    "dateGroup.thisWeek": "修改時間：本週",
+    "dateGroup.lastWeek": "修改時間：上週",
+    "dateGroup.thisMonth": "修改時間：本月",
+    "dateGroup.older": "修改時間：更早"
 }

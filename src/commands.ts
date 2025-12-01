@@ -20,7 +20,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
     // Register auto group by extension command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.autoGroupByExt', () => {
         provider.addAutoGroupsByExt();
-    }));    
+    }));
 
     // One-click open group command (only for custom groups)
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.openAllFiles', async (item: TempFolderItem) => {
@@ -53,7 +53,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
         if (!group || group.builtIn) return;
-        
+
         // Generate new name
         let base = group.name.replace(/\s*Copy( \d+)?$/, '');
         let idx = 1;
@@ -62,7 +62,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             idx++;
             newName = I18n.getCopyGroupName(base, idx);
         }
-        
+
         // Duplicate group
         provider.groups.push({
             name: newName,
@@ -76,7 +76,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
         if (!group || group.builtIn) return;
-        
+
         const newName = await vscode.window.showInputBox({
             prompt: I18n.getMessage('input.groupNamePrompt'),
             value: group.name,
@@ -86,7 +86,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
                 return null;
             }
         });
-        
+
         if (newName && newName !== group.name) {
             group.name = newName;
             provider.refresh();
@@ -119,39 +119,39 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.openSelectedFiles', async () => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
-        
+
         await provider.openSelectedFiles(selectedItems);
     }));
-    
+
     // Handle closing multiple selected files
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.closeSelectedFiles', async () => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
-        
+
         await provider.closeSelectedFiles(selectedItems);
     }));
-        // Handle removing multiple selected files from group
+    // Handle removing multiple selected files from group
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeSelectedFilesFromGroup', (item: TempFileItem) => {
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
-        
+
         // If no specific item is provided or item is not TempFileItem, use the first selected item
         const fileItem = (item instanceof TempFileItem) ? item : selectedItems[0];
-        
+
         // Use the group index of the file item directly
         provider.removeFilesFromGroup(fileItem.groupIdx, selectedItems);
     }));
-    
+
     // Group context menu "Add selected files to group"
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.addSelectedFilesToGroup', (item: TempFolderItem) => {
         if (typeof item?.groupIdx !== 'number') return;
-        
+
         const selectedItems = provider.getSelectedFileItems();
         if (selectedItems.length === 0) return;
-        
+
         provider.addMultipleFilesToGroup(item.groupIdx, selectedItems);
     }));
-    
+
     // Copy file name command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.copyFileName', async (item: TempFileItem) => {
         if (!(item instanceof TempFileItem)) return;
@@ -170,7 +170,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
         if (typeof item?.groupIdx !== 'number') return;
         const group = provider.groups[item.groupIdx];
         if (!group || !group.builtIn) return;
-        
+
         // Generate new name
         let base = I18n.getBuiltInGroupName();
         let idx = 1;
@@ -179,7 +179,7 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             idx++;
             newName = I18n.getCopyGroupName(base, idx);
         }
-        
+
         provider.groups.push({
             name: newName,
             files: group.files ? [...group.files] : []
@@ -196,30 +196,81 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
     }));    // Remove single file from group
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.removeFileFromGroup', (item: TempFileItem) => {
         if (!(item instanceof TempFileItem)) return;
-        
+
         // Directly use the group index of the file item, no need to search again
         const groupIdx = item.groupIdx;
         const group = provider.groups[groupIdx];
-        
+
         if (!group || !group.files) {
             vscode.window.showErrorMessage(I18n.getMessage('message.groupNotFound'));
             return;
         }
-        
+
         // Filter out the file to be removed
         const originalLength = group.files.length;
         group.files = group.files.filter(uri => uri !== item.uri.toString());
-        
+
         // Check if the file is really removed
         if (group.files.length === originalLength) {
             vscode.window.showWarningMessage(I18n.getMessage('message.fileNotInGroup'));
             return;
         }
-        
+
         // Refresh TreeView
         provider.refresh();
-        
+
         // Show removal success message
         vscode.window.showInformationMessage(I18n.getMessage('message.fileRemovedFromGroup', group.name));
+    }));
+
+    // Sort by name command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.sortByName', (item: TempFolderItem) => {
+        if (typeof item?.groupIdx === 'number') {
+            provider.setSortPreference(item.groupIdx, 'name', 'asc');
+        }
+    }));
+
+    // Sort by path command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.sortByPath', (item: TempFolderItem) => {
+        if (typeof item?.groupIdx === 'number') {
+            provider.setSortPreference(item.groupIdx, 'path', 'asc');
+        }
+    }));
+
+    // Sort by extension command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.sortByExtension', (item: TempFolderItem) => {
+        if (typeof item?.groupIdx === 'number') {
+            provider.setSortPreference(item.groupIdx, 'extension', 'asc');
+        }
+    }));
+
+    // Sort by modified time command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.sortByModified', (item: TempFolderItem) => {
+        if (typeof item?.groupIdx === 'number') {
+            provider.setSortPreference(item.groupIdx, 'modified', 'asc');
+        }
+    }));
+
+    // Toggle sort order command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.toggleSortOrder', (item: TempFolderItem) => {
+        if (typeof item?.groupIdx === 'number') {
+            const group = provider.groups[item.groupIdx];
+            if (group && group.sortBy && group.sortBy !== 'none') {
+                const newOrder = group.sortOrder === 'asc' ? 'desc' : 'asc';
+                provider.setSortPreference(item.groupIdx, group.sortBy, newOrder);
+            }
+        }
+    }));
+
+    // Clear sorting command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.clearSort', (item: TempFolderItem) => {
+        if (typeof item?.groupIdx === 'number') {
+            provider.setSortPreference(item.groupIdx, 'none', 'asc');
+        }
+    }));
+
+    // Auto group by modified date command
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.autoGroupByModifiedDate', () => {
+        provider.autoGroupByModifiedDate();
     }));
 }

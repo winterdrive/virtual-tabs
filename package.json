@@ -2,10 +2,9 @@
     "name": "virtual-tabs",
     "displayName": "%extension.displayName%",
     "description": "%extension.description%",
-    "version": "0.0.9",
+    "version": "0.1.0",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
-    
     "categories": [
         "Other"
     ],
@@ -41,7 +40,8 @@
     "license": "MIT",
     "engines": {
         "vscode": "^1.75.0"
-    },    "main": "./dist/extension.js",
+    },
+    "main": "./dist/extension.js",
     "activationEvents": [
         "onStartupFinished"
     ],
@@ -65,65 +65,294 @@
             ]
         },
         "commands": [
-            { "command": "virtualTabs.addGroup", "title": "%command.addGroup.title%" },
-            { "command": "virtualTabs.removeGroup", "title": "%command.removeGroup.title%" },
-            { "command": "virtualTabs.renameGroup", "title": "%command.renameGroup.title%" },
-            { "command": "virtualTabs.duplicateGroup", "title": "%command.duplicateGroup.title%" },
-            { "command": "virtualTabs.duplicateBuiltInGroup", "title": "%command.duplicateBuiltInGroup.title%" },
-            { "command": "virtualTabs.refreshBuiltInGroup", "title": "%command.refreshBuiltInGroup.title%" },
-            { "command": "virtualTabs.autoGroupByExt", "title": "%command.autoGroupByExt.title%" },
-            { "command": "virtualTabs.addSelectedFilesToGroup", "title": "%command.addSelectedFilesToGroup.title%" },
-            { "command": "virtualTabs.openAllFiles", "title": "%command.openAllFiles.title%" },
-            { "command": "virtualTabs.closeAllFiles", "title": "%command.closeAllFiles.title%" },
-            
-            { "command": "virtualTabs.openSelectedFiles", "title": "%command.openSelectedFiles.title%" },
-            { "command": "virtualTabs.closeSelectedFiles", "title": "%command.closeSelectedFiles.title%" },
-            { "command": "virtualTabs.removeSelectedFilesFromGroup", "title": "%command.removeSelectedFilesFromGroup.title%" },
-            { "command": "deleteFile", "title": "%command.deleteFile.title%" },
-
-            { "command": "copyFilePath", "title": "%command.copyFilePath.title%" },
-            { "command": "virtualTabs.copyFileName", "title": "%command.copyFileName.title%" },
-            { "command": "virtualTabs.copyRelativePath", "title": "%command.copyRelativePath.title%" },
-            { "command": "revealFileInOS", "title": "%command.revealFileInOS.title%" },
-            { "command": "virtualTabs.removeFileFromGroup", "title": "%command.removeFileFromGroup.title%" }
+            {
+                "command": "virtualTabs.addGroup",
+                "title": "%command.addGroup.title%"
+            },
+            {
+                "command": "virtualTabs.removeGroup",
+                "title": "%command.removeGroup.title%"
+            },
+            {
+                "command": "virtualTabs.renameGroup",
+                "title": "%command.renameGroup.title%"
+            },
+            {
+                "command": "virtualTabs.duplicateGroup",
+                "title": "%command.duplicateGroup.title%"
+            },
+            {
+                "command": "virtualTabs.duplicateBuiltInGroup",
+                "title": "%command.duplicateBuiltInGroup.title%"
+            },
+            {
+                "command": "virtualTabs.refreshBuiltInGroup",
+                "title": "%command.refreshBuiltInGroup.title%"
+            },
+            {
+                "command": "virtualTabs.autoGroupByExt",
+                "title": "%command.autoGroupByExt.title%"
+            },
+            {
+                "command": "virtualTabs.addSelectedFilesToGroup",
+                "title": "%command.addSelectedFilesToGroup.title%"
+            },
+            {
+                "command": "virtualTabs.openAllFiles",
+                "title": "%command.openAllFiles.title%"
+            },
+            {
+                "command": "virtualTabs.closeAllFiles",
+                "title": "%command.closeAllFiles.title%"
+            },
+            {
+                "command": "virtualTabs.openSelectedFiles",
+                "title": "%command.openSelectedFiles.title%"
+            },
+            {
+                "command": "virtualTabs.closeSelectedFiles",
+                "title": "%command.closeSelectedFiles.title%"
+            },
+            {
+                "command": "virtualTabs.removeSelectedFilesFromGroup",
+                "title": "%command.removeSelectedFilesFromGroup.title%"
+            },
+            {
+                "command": "deleteFile",
+                "title": "%command.deleteFile.title%"
+            },
+            {
+                "command": "copyFilePath",
+                "title": "%command.copyFilePath.title%"
+            },
+            {
+                "command": "virtualTabs.copyFileName",
+                "title": "%command.copyFileName.title%"
+            },
+            {
+                "command": "virtualTabs.copyRelativePath",
+                "title": "%command.copyRelativePath.title%"
+            },
+            {
+                "command": "revealFileInOS",
+                "title": "%command.revealFileInOS.title%"
+            },
+            {
+                "command": "virtualTabs.removeFileFromGroup",
+                "title": "%command.removeFileFromGroup.title%"
+            },
+            {
+                "command": "virtualTabs.sortByName",
+                "title": "%command.sortByName.title%"
+            },
+            {
+                "command": "virtualTabs.sortByPath",
+                "title": "%command.sortByPath.title%"
+            },
+            {
+                "command": "virtualTabs.sortByExtension",
+                "title": "%command.sortByExtension.title%"
+            },
+            {
+                "command": "virtualTabs.sortByModified",
+                "title": "%command.sortByModified.title%"
+            },
+            {
+                "command": "virtualTabs.toggleSortOrder",
+                "title": "%command.toggleSortOrder.title%"
+            },
+            {
+                "command": "virtualTabs.clearSort",
+                "title": "%command.clearSort.title%"
+            },
+            {
+                "command": "virtualTabs.autoGroupByModifiedDate",
+                "title": "%command.autoGroupByModifiedDate.title%"
+            }
+        ],
+        "submenus": [
+            {
+                "id": "virtualTabs.sortMenu",
+                "label": "%submenu.sortFiles.label%"
+            }
         ],
         "menus": {
             "view/item/context": [
-                { "command": "virtualTabs.addGroup", "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)", "group": "navigation@1" },
-                { "command": "virtualTabs.removeGroup", "when": "view == virtualTabsView && viewItem == virtualTabsGroup", "group": "inline@1" },
-                { "command": "virtualTabs.renameGroup", "when": "view == virtualTabsView && viewItem == virtualTabsGroup", "group": "navigation@2" },
-                { "command": "virtualTabs.duplicateGroup", "when": "view == virtualTabsView && viewItem == virtualTabsGroup", "group": "navigation@3" },
-                { "command": "virtualTabs.duplicateBuiltInGroup", "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn", "group": "navigation@4" },
-                { "command": "virtualTabs.refreshBuiltInGroup", "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn", "group": "inline@2" },
-                { "command": "virtualTabs.autoGroupByExt", "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)", "group": "navigation@5" },
-                { "command": "virtualTabs.addSelectedFilesToGroup", "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn) && selectedCount > 0", "group": "navigation@6" },
-                { "command": "virtualTabs.openAllFiles", "when": "view == virtualTabsView && viewItem == virtualTabsGroup", "group": "navigation@7" },
-                { "command": "virtualTabs.closeAllFiles", "when": "view == virtualTabsView && viewItem == virtualTabsGroup", "group": "navigation@8" },
-
-                { "command": "virtualTabs.openSelectedFiles", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1", "group": "navigation@1" },
-                { "command": "virtualTabs.closeSelectedFiles", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1", "group": "navigation@2" },
-                { "command": "virtualTabs.removeSelectedFilesFromGroup", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1", "group": "navigation@3" },
-                { "command": "deleteFile", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount <= 1", "group": "navigation@4" },
-
-                { "command": "virtualTabs.openSelectedFiles", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1", "group": "navigation@1" },
-                { "command": "virtualTabs.closeSelectedFiles", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1", "group": "navigation@2" },
-
-                { "command": "virtualTabs.copyFileName", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@10" },
-                { "command": "virtualTabs.copyRelativePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@11" },
-                { "command": "copyFilePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@12" },
-                { "command": "revealFileInOS", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "navigation@13" },
-                { "command": "virtualTabs.removeFileFromGroup", "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom", "group": "inline@3" },
-
-                { "command": "virtualTabs.copyFileName", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@10" },
-                { "command": "virtualTabs.copyRelativePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@11" },
-                { "command": "copyFilePath", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@12" },
-                { "command": "revealFileInOS", "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn", "group": "navigation@13" }
+                {
+                    "command": "virtualTabs.addGroup",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "virtualTabs.removeGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "inline@1"
+                },
+                {
+                    "command": "virtualTabs.renameGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "virtualTabs.duplicateGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "virtualTabs.duplicateBuiltInGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "navigation@4"
+                },
+                {
+                    "command": "virtualTabs.refreshBuiltInGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "inline@2"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByExt",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
+                    "group": "navigation@5"
+                },
+                {
+                    "submenu": "virtualTabs.sortMenu",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
+                    "group": "sorting@1"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByModifiedDate",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
+                    "group": "navigation@9"
+                },
+                {
+                    "command": "virtualTabs.addSelectedFilesToGroup",
+                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn) && selectedCount > 0",
+                    "group": "navigation@6"
+                },
+                {
+                    "command": "virtualTabs.openAllFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@7"
+                },
+                {
+                    "command": "virtualTabs.closeAllFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "navigation@8"
+                },
+                {
+                    "command": "virtualTabs.openSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "virtualTabs.closeSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "virtualTabs.removeSelectedFilesFromGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "navigation@3"
+                },
+                {
+                    "command": "deleteFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount <= 1",
+                    "group": "navigation@4"
+                },
+                {
+                    "command": "virtualTabs.openSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "virtualTabs.closeSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "virtualTabs.copyFileName",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "navigation@10"
+                },
+                {
+                    "command": "virtualTabs.copyRelativePath",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "navigation@11"
+                },
+                {
+                    "command": "copyFilePath",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "navigation@12"
+                },
+                {
+                    "command": "revealFileInOS",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "navigation@13"
+                },
+                {
+                    "command": "virtualTabs.removeFileFromGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "inline@3"
+                },
+                {
+                    "command": "virtualTabs.copyFileName",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
+                    "group": "navigation@10"
+                },
+                {
+                    "command": "virtualTabs.copyRelativePath",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
+                    "group": "navigation@11"
+                },
+                {
+                    "command": "copyFilePath",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
+                    "group": "navigation@12"
+                },
+                {
+                    "command": "revealFileInOS",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
+                    "group": "navigation@13"
+                }
             ],
             "editor/title/context": [
-                { "command": "virtualTabs.addSelectedFilesToGroup", "when": "editorFocus", "group": "navigation" }
+                {
+                    "command": "virtualTabs.addSelectedFilesToGroup",
+                    "when": "editorFocus",
+                    "group": "navigation"
+                }
             ],
             "explorer/context": [
-                { "command": "virtualTabs.addSelectedFilesToGroup", "when": "explorerResourceIsFolder || explorerResourceIsRoot", "group": "navigation" }
+                {
+                    "command": "virtualTabs.addSelectedFilesToGroup",
+                    "when": "explorerResourceIsFolder || explorerResourceIsRoot",
+                    "group": "navigation"
+                }
+            ],
+            "virtualTabs.sortMenu": [
+                {
+                    "command": "virtualTabs.sortByName",
+                    "group": "1_sort@1"
+                },
+                {
+                    "command": "virtualTabs.sortByPath",
+                    "group": "1_sort@2"
+                },
+                {
+                    "command": "virtualTabs.sortByExtension",
+                    "group": "1_sort@3"
+                },
+                {
+                    "command": "virtualTabs.sortByModified",
+                    "group": "1_sort@4"
+                },
+                {
+                    "command": "virtualTabs.toggleSortOrder",
+                    "group": "2_order@1"
+                },
+                {
+                    "command": "virtualTabs.clearSort",
+                    "group": "3_actions@1"
+                }
             ]
         }
     },
