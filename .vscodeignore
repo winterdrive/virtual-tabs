@@ -21,3 +21,5 @@ tsconfig.json
 # 其他暫存或備份檔
 *.log
 *.tmp
+
+CR/*
