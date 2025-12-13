@@ -2,6 +2,31 @@
 
 All notable changes to the "VirtualTabs" extension will be documented in this file.
 
+## [0.3.0] - 2025-12-13
+
+### Added
+
+- **Sub-Groups & Nested Structure**: Create hierarchical group organization by adding sub-groups or dragging groups onto each other.
+- **AI Context Export**: Copy all files in a group as LLM-ready markdown with "Copy Context for AI" command.
+- **Unified Copy Menu**: New submenu with smart behavior - copies work differently on groups vs files.
+- **Directory Drag & Drop**: Drag folders from Explorer to recursively add all files within.
+- **Copy/Paste/Delete Commands**: Full clipboard operations for files and groups within VirtualTabs.
+- **Multi-select Delete**: Delete multiple groups or files at once.
+- **File Move with Bookmarks**: Dragging files between groups preserves their bookmarks.
+
+### Changed
+
+- Groups now require unique IDs for stable references (auto-migrated from older versions).
+- Improved drag-and-drop controller with better file/group/directory detection.
+- Context menus reorganized with separate submenus for different item types.
+- Copy File Name/Path commands now work on groups (copies all files recursively).
+
+### Fixed
+
+- Fixed circular nesting detection when dragging groups.
+- Fixed bookmark preservation when moving files between groups.
+- Improved error handling for large file context copying.
+
 ## [0.2.0] - 2025-12-01
 
 ### Added

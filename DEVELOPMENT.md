@@ -182,20 +182,38 @@ virtual-tabs/
 │   └── tasks.json        # Build task configuration
 ├── dist/                 # TypeScript build output
 ├── assets/               # Icons and screenshots
-│   ├── demo.png         # Feature demo screenshot
+│   ├── hero_banner.png   # Hero banner for README
+│   ├── nested_groups_demo.png  # Sub-groups feature demo
+│   ├── ai_context_demo.png     # AI context export demo
+│   ├── copy_menu_demo.png      # Copy menu demo
+│   ├── drag_drop_demo.png      # Drag and drop demo
+│   ├── bookmarks_feature.png   # Bookmarks feature demo
 │   └── virtualtabs_icon_*.png  # Extension icons
+├── i18n/                 # Internationalization files
+│   ├── en.json          # English translations
+│   ├── zh-tw.json       # Traditional Chinese translations
+│   └── zh-cn.json       # Simplified Chinese translations
 ├── src/                  # TypeScript source code
 │   ├── extension.ts      # Extension entry (activate/deactivate)
-│   ├── types.ts          # Data structure definitions (TempGroup)
-│   ├── treeItems.ts      # TreeView item definitions (TempFolderItem/TempFileItem)
+│   ├── types.ts          # Data structure definitions (TempGroup, VTBookmark)
+│   ├── treeItems.ts      # TreeView item definitions (TempFolderItem/TempFileItem/BookmarkItem)
 │   ├── provider.ts       # TreeDataProvider implementation and group management logic
-│   ├── dragAndDrop.ts    # Drag-and-drop controller (TreeDragAndDropController)
+│   ├── dragAndDrop.ts    # Drag-and-drop controller (supports files, groups, directories)
 │   ├── commands.ts       # VS Code command registration and implementation
+│   ├── bookmarks.ts      # Bookmark management utilities
+│   ├── decorations.ts    # Editor decoration management (gutter icons)
+│   ├── i18n.ts           # Internationalization utilities
 │   └── index.ts          # Module export entry
 ├── package.json          # Extension description, commands, and menu configuration
+├── package.nls.json      # English localization for package.json
+├── package.nls.zh-tw.json # Traditional Chinese localization
+├── package.nls.zh-cn.json # Simplified Chinese localization
 ├── tsconfig.json         # TypeScript config
-├── readme.md             # Usage and development guide
+├── readme.md             # English README
+├── README.zh-TW.md       # Traditional Chinese README
+├── CHANGELOG.md          # Version change log
 ├── DEVELOPMENT.md        # Detailed development guide
+├── I18N.md               # Internationalization guide
 └── LICENSE               # MIT License
 ```
 
@@ -204,11 +222,14 @@ virtual-tabs/
 | Module File         | Description                                      | Main Class/Interface |
 | ------------------- | ------------------------------------------------ | -------------------- |
 | `extension.ts`      | Extension lifecycle management, initializes provider, drag-and-drop controller, and command registration | `activate()`, `deactivate()` |
-| `provider.ts`       | Implements `TreeDataProvider`, manages group data, file operations, and UI updates | `TempFoldersProvider` |
-| `treeItems.ts`      | Defines TreeView item classes, controls display behavior and contextValue | `TempFolderItem`, `TempFileItem` |
-| `types.ts`          | Defines shared data structures and interfaces    | `TempGroup` |
-| `dragAndDrop.ts`    | Implements drag-and-drop controller, handles file drag to group | `TempFoldersDragAndDropController` |
-| `commands.ts`       | Registers and implements all VS Code commands, including group and file management | `registerCommands()` |
+| `provider.ts`       | Implements `TreeDataProvider`, manages group data, file operations, sub-groups, and UI updates | `TempFoldersProvider` |
+| `treeItems.ts`      | Defines TreeView item classes, controls display behavior and contextValue | `TempFolderItem`, `TempFileItem`, `BookmarkItem` |
+| `types.ts`          | Defines shared data structures and interfaces    | `TempGroup`, `VTBookmark` |
+| `dragAndDrop.ts`    | Implements drag-and-drop controller, handles file/group/directory drag operations | `TempFoldersDragAndDropController` |
+| `commands.ts`       | Registers and implements all VS Code commands, including group, file, bookmark, and clipboard operations | `registerCommands()` |
+| `bookmarks.ts`      | Bookmark management utilities (v0.2.0+)          | `BookmarkManager` |
+| `decorations.ts`    | Editor decoration management for bookmark gutter icons (v0.2.0+) | `DecorationManager` |
+| `i18n.ts`           | Internationalization utilities                   | `I18n` |
 
 ### Core Data Flow
 

@@ -68,7 +68,7 @@ export interface VTBookmark {
 
 // Group data structure
 export interface TempGroup {
-    id?: string;                        // Unique identifier (for future use)
+    id: string;                        // Unique identifier (Enforced in v0.3.0)
     name: string;
     files?: string[];                   // Array of file URIs in the group
     readonly builtIn?: boolean;         // Mark if this is a built-in group

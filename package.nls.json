@@ -8,6 +8,7 @@
     "command.renameGroup.title": "Rename Group",
     "command.duplicateGroup.title": "Duplicate Group",
     "command.duplicateBuiltInGroup.title": "Duplicate Group (Currently Open Files)",
+    "command.addSubGroup.title": "Add Sub-Group",
     "command.refreshBuiltInGroup.title": "Refresh",
     "command.autoGroupByExt.title": "Auto Group by Extension",
     "command.addSelectedFilesToGroup.title": "Add Selected Files to Group",
@@ -34,5 +35,7 @@
     "command.editBookmarkLabel.title": "Edit Bookmark Label",
     "command.editBookmarkDescription.title": "Edit Bookmark Description",
     "command.removeBookmark.title": "Remove Bookmark",
-    "submenu.sortFiles.label": "Sort Files"
+    "submenu.sortFiles.label": "Sort Files",
+    "command.copyGroupContext.title": "Copy Context for AI",
+    "command.copyGroupPaths.title": "Copy File Paths"
 }

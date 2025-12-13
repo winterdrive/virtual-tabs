@@ -3,9 +3,22 @@ import { VTBookmark } from './types';
 
 // Temporary folder TreeItem
 export class TempFolderItem extends vscode.TreeItem {
-    constructor(label: string, public readonly groupIdx: number, builtIn?: boolean) {
+    constructor(
+        label: string,
+        public readonly groupIdx: number,
+        public readonly groupId: string, // Store Group ID for stable reference
+        builtIn?: boolean,
+        isSubGroup?: boolean // Indicate if this is a sub-group
+    ) {
         super(label, vscode.TreeItemCollapsibleState.Collapsed);
-        this.iconPath = vscode.ThemeIcon.Folder;
+
+        // Visual distinction: Sub-groups use a different icon
+        if (isSubGroup) {
+            this.iconPath = new vscode.ThemeIcon('folder-library', new vscode.ThemeColor('charts.blue'));
+        } else {
+            this.iconPath = new vscode.ThemeIcon('folder');
+        }
+
         this.contextValue = builtIn ? 'virtualTabsGroupBuiltIn' : 'virtualTabsGroup'; // Distinguish built-in and custom groups
         // Prevent accidental open on expand
         this.command = undefined;

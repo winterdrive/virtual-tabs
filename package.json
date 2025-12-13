@@ -2,7 +2,7 @@
     "name": "virtual-tabs",
     "displayName": "%extension.displayName%",
     "description": "%extension.description%",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
     "categories": [
@@ -60,7 +60,8 @@
                 {
                     "id": "virtualTabsView",
                     "name": "%view.virtualTabsView.name%",
-                    "icon": "assets/virtualtabs_icon_gray.svg"
+                    "icon": "assets/virtualtabs_icon_gray.svg",
+                    "dragAndDrop": true
                 }
             ]
         },
@@ -71,7 +72,8 @@
             },
             {
                 "command": "virtualTabs.removeGroup",
-                "title": "%command.removeGroup.title%"
+                "title": "%command.removeGroup.title%",
+                "icon": "$(trash)"
             },
             {
                 "command": "virtualTabs.renameGroup",
@@ -86,8 +88,13 @@
                 "title": "%command.duplicateBuiltInGroup.title%"
             },
             {
+                "command": "virtualTabs.addSubGroup",
+                "title": "%command.addSubGroup.title%"
+            },
+            {
                 "command": "virtualTabs.refreshBuiltInGroup",
-                "title": "%command.refreshBuiltInGroup.title%"
+                "title": "%command.refreshBuiltInGroup.title%",
+                "icon": "$(refresh)"
             },
             {
                 "command": "virtualTabs.autoGroupByExt",
@@ -122,8 +129,8 @@
                 "title": "%command.deleteFile.title%"
             },
             {
-                "command": "copyFilePath",
-                "title": "%command.copyFilePath.title%"
+                "command": "virtualTabs.copyAbsolutePath",
+                "title": "Copy Absolute Path"
             },
             {
                 "command": "virtualTabs.copyFileName",
@@ -139,7 +146,8 @@
             },
             {
                 "command": "virtualTabs.removeFileFromGroup",
-                "title": "%command.removeFileFromGroup.title%"
+                "title": "%command.removeFileFromGroup.title%",
+                "icon": "$(trash)"
             },
             {
                 "command": "virtualTabs.sortByName",
@@ -187,21 +195,117 @@
             },
             {
                 "command": "virtualTabs.removeBookmark",
-                "title": "%command.removeBookmark.title%"
+                "title": "%command.removeBookmark.title%",
+                "icon": "$(trash)"
+            },
+            {
+                "command": "virtualTabs.copyGroupContext",
+                "title": "%command.copyGroupContext.title%"
+            },
+            {
+                "command": "virtualTabs.copyGroupPaths",
+                "title": "%command.copyGroupPaths.title%"
+            },
+            {
+                "command": "virtualTabs.delete",
+                "title": "Delete"
+            },
+            {
+                "command": "virtualTabs.copy",
+                "title": "Copy"
+            },
+            {
+                "command": "virtualTabs.paste",
+                "title": "Paste"
             }
         ],
         "submenus": [
             {
-                "id": "virtualTabs.sortMenu",
+                "id": "virtualTabs.sortMenu.group",
                 "label": "%submenu.sortFiles.label%"
+            },
+            {
+                "id": "virtualTabs.sortMenu.builtIn",
+                "label": "%submenu.sortFiles.label%"
+            },
+            {
+                "id": "virtualTabs.copyMenu.group",
+                "label": "Copy..."
+            },
+            {
+                "id": "virtualTabs.copyMenu.builtIn",
+                "label": "Copy..."
+            },
+            {
+                "id": "virtualTabs.copyMenu.fileCustom",
+                "label": "Copy..."
+            },
+            {
+                "id": "virtualTabs.copyMenu.fileBuiltIn",
+                "label": "Copy..."
             }
         ],
         "menus": {
             "view/item/context": [
                 {
                     "command": "virtualTabs.addGroup",
-                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
-                    "group": "navigation@1"
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "1_basic@1"
+                },
+                {
+                    "command": "virtualTabs.addSubGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "1_basic@2"
+                },
+                {
+                    "command": "virtualTabs.renameGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "1_basic@3"
+                },
+                {
+                    "command": "virtualTabs.duplicateGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "1_basic@4"
+                },
+                {
+                    "command": "virtualTabs.openAllFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "2_files@1"
+                },
+                {
+                    "command": "virtualTabs.closeAllFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "2_files@2"
+                },
+                {
+                    "command": "virtualTabs.addSelectedFilesToGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup && selectedCount > 0",
+                    "group": "2_files@3"
+                },
+                {
+                    "submenu": "virtualTabs.sortMenu.group",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@1"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByExt",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@2"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByModifiedDate",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@3"
+                },
+                {
+                    "submenu": "virtualTabs.copyMenu.group",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "4_copy@1"
+                },
+                {
+                    "command": "virtualTabs.paste",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "5_edit@1"
                 },
                 {
                     "command": "virtualTabs.removeGroup",
@@ -209,139 +313,114 @@
                     "group": "inline@1"
                 },
                 {
-                    "command": "virtualTabs.renameGroup",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
-                    "group": "navigation@2"
-                },
-                {
-                    "command": "virtualTabs.duplicateGroup",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
-                    "group": "navigation@3"
+                    "command": "virtualTabs.addGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "1_basic@1"
                 },
                 {
                     "command": "virtualTabs.duplicateBuiltInGroup",
                     "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
-                    "group": "navigation@4"
+                    "group": "1_basic@2"
+                },
+                {
+                    "command": "virtualTabs.addSelectedFilesToGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn && selectedCount > 0",
+                    "group": "2_files@1"
+                },
+                {
+                    "submenu": "virtualTabs.sortMenu.builtIn",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "3_organize@1"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByExt",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "3_organize@2"
+                },
+                {
+                    "command": "virtualTabs.autoGroupByModifiedDate",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "3_organize@3"
+                },
+                {
+                    "submenu": "virtualTabs.copyMenu.builtIn",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
+                    "group": "4_copy@1"
                 },
                 {
                     "command": "virtualTabs.refreshBuiltInGroup",
                     "when": "view == virtualTabsView && viewItem == virtualTabsGroupBuiltIn",
-                    "group": "inline@2"
-                },
-                {
-                    "command": "virtualTabs.autoGroupByExt",
-                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
-                    "group": "navigation@5"
-                },
-                {
-                    "submenu": "virtualTabs.sortMenu",
-                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
-                    "group": "sorting@1"
-                },
-                {
-                    "command": "virtualTabs.autoGroupByModifiedDate",
-                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn)",
-                    "group": "navigation@9"
-                },
-                {
-                    "command": "virtualTabs.addSelectedFilesToGroup",
-                    "when": "view == virtualTabsView && (viewItem == virtualTabsGroup || viewItem == virtualTabsGroupBuiltIn) && selectedCount > 0",
-                    "group": "navigation@6"
-                },
-                {
-                    "command": "virtualTabs.openAllFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
-                    "group": "navigation@7"
-                },
-                {
-                    "command": "virtualTabs.closeAllFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
-                    "group": "navigation@8"
+                    "group": "inline@1"
                 },
                 {
                     "command": "virtualTabs.openSelectedFiles",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
-                    "group": "navigation@1"
+                    "group": "1_open@1"
                 },
                 {
                     "command": "virtualTabs.closeSelectedFiles",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
-                    "group": "navigation@2"
+                    "group": "1_open@2"
                 },
                 {
-                    "command": "virtualTabs.removeSelectedFilesFromGroup",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
-                    "group": "navigation@3"
-                },
-                {
-                    "command": "deleteFile",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount <= 1",
-                    "group": "navigation@4"
-                },
-                {
-                    "command": "virtualTabs.openSelectedFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
-                    "group": "navigation@1"
-                },
-                {
-                    "command": "virtualTabs.closeSelectedFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
-                    "group": "navigation@2"
-                },
-                {
-                    "command": "virtualTabs.copyFileName",
+                    "command": "virtualTabs.paste",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
-                    "group": "navigation@10"
+                    "group": "2_edit@1"
                 },
                 {
-                    "command": "virtualTabs.copyRelativePath",
+                    "submenu": "virtualTabs.copyMenu.fileCustom",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
-                    "group": "navigation@11"
-                },
-                {
-                    "command": "copyFilePath",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
-                    "group": "navigation@12"
+                    "group": "3_copy@1"
                 },
                 {
                     "command": "revealFileInOS",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
-                    "group": "navigation@13"
+                    "group": "4_system@1"
                 },
                 {
                     "command": "virtualTabs.removeFileFromGroup",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
-                    "group": "inline@3"
+                    "group": "inline@1"
                 },
                 {
-                    "command": "virtualTabs.copyFileName",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
-                    "group": "navigation@10"
+                    "command": "virtualTabs.removeSelectedFilesFromGroup",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "group": "9_delete@1"
                 },
                 {
-                    "command": "virtualTabs.copyRelativePath",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
-                    "group": "navigation@11"
+                    "command": "deleteFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "group": "9_delete@2"
                 },
                 {
-                    "command": "copyFilePath",
+                    "command": "virtualTabs.openSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
+                    "group": "1_open@1"
+                },
+                {
+                    "command": "virtualTabs.closeSelectedFiles",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
+                    "group": "1_open@2"
+                },
+                {
+                    "submenu": "virtualTabs.copyMenu.fileBuiltIn",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
-                    "group": "navigation@12"
+                    "group": "3_copy@1"
                 },
                 {
                     "command": "revealFileInOS",
                     "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
-                    "group": "navigation@13"
+                    "group": "4_system@1"
                 },
                 {
                     "command": "virtualTabs.editBookmarkLabel",
                     "when": "view == virtualTabsView && viewItem == virtualTabsBookmark",
-                    "group": "edit@1"
+                    "group": "1_edit@1"
                 },
                 {
                     "command": "virtualTabs.editBookmarkDescription",
                     "when": "view == virtualTabsView && viewItem == virtualTabsBookmark",
-                    "group": "edit@2"
+                    "group": "1_edit@2"
                 },
                 {
                     "command": "virtualTabs.removeBookmark",
@@ -356,7 +435,7 @@
                     "group": "virtualTabs"
                 }
             ],
-            "virtualTabs.sortMenu": [
+            "virtualTabs.sortMenu.group": [
                 {
                     "command": "virtualTabs.sortByName",
                     "group": "1_sort@1"
@@ -381,8 +460,134 @@
                     "command": "virtualTabs.clearSort",
                     "group": "3_actions@1"
                 }
+            ],
+            "virtualTabs.sortMenu.builtIn": [
+                {
+                    "command": "virtualTabs.sortByName",
+                    "group": "1_sort@1"
+                },
+                {
+                    "command": "virtualTabs.sortByPath",
+                    "group": "1_sort@2"
+                },
+                {
+                    "command": "virtualTabs.sortByExtension",
+                    "group": "1_sort@3"
+                },
+                {
+                    "command": "virtualTabs.sortByModified",
+                    "group": "1_sort@4"
+                },
+                {
+                    "command": "virtualTabs.toggleSortOrder",
+                    "group": "2_order@1"
+                },
+                {
+                    "command": "virtualTabs.clearSort",
+                    "group": "3_actions@1"
+                }
+            ],
+            "virtualTabs.copyMenu.group": [
+                {
+                    "command": "virtualTabs.copy",
+                    "group": "1_move@1"
+                },
+                {
+                    "command": "virtualTabs.copyGroupContext",
+                    "group": "2_ai@1"
+                },
+                {
+                    "command": "virtualTabs.copyFileName",
+                    "group": "3_info@1"
+                },
+                {
+                    "command": "virtualTabs.copyRelativePath",
+                    "group": "3_info@2"
+                },
+                {
+                    "command": "virtualTabs.copyAbsolutePath",
+                    "group": "3_info@3"
+                }
+            ],
+            "virtualTabs.copyMenu.builtIn": [
+                {
+                    "command": "virtualTabs.copy",
+                    "group": "1_move@1"
+                },
+                {
+                    "command": "virtualTabs.copyGroupContext",
+                    "group": "2_ai@1"
+                },
+                {
+                    "command": "virtualTabs.copyFileName",
+                    "group": "3_info@1"
+                },
+                {
+                    "command": "virtualTabs.copyRelativePath",
+                    "group": "3_info@2"
+                },
+                {
+                    "command": "virtualTabs.copyAbsolutePath",
+                    "group": "3_info@3"
+                }
+            ],
+            "virtualTabs.copyMenu.fileCustom": [
+                {
+                    "command": "virtualTabs.copy",
+                    "group": "1_move@1"
+                },
+                {
+                    "command": "virtualTabs.copyGroupContext",
+                    "group": "2_ai@1"
+                },
+                {
+                    "command": "virtualTabs.copyFileName",
+                    "group": "3_info@1"
+                },
+                {
+                    "command": "virtualTabs.copyRelativePath",
+                    "group": "3_info@2"
+                },
+                {
+                    "command": "virtualTabs.copyAbsolutePath",
+                    "group": "3_info@3"
+                }
+            ],
+            "virtualTabs.copyMenu.fileBuiltIn": [
+                {
+                    "command": "virtualTabs.copy",
+                    "group": "1_move@1"
+                },
+                {
+                    "command": "virtualTabs.copyGroupContext",
+                    "group": "2_ai@1"
+                },
+                {
+                    "command": "virtualTabs.copyFileName",
+                    "group": "3_info@1"
+                },
+                {
+                    "command": "virtualTabs.copyRelativePath",
+                    "group": "3_info@2"
+                },
+                {
+                    "command": "virtualTabs.copyAbsolutePath",
+                    "group": "3_info@3"
+                }
             ]
-        }
+        },
+        "keybindings": [
+            {
+                "command": "virtualTabs.copy",
+                "key": "ctrl+shift+c",
+                "when": "sideBarFocus"
+            },
+            {
+                "command": "virtualTabs.paste",
+                "key": "ctrl+shift+v",
+                "when": "sideBarFocus"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./"

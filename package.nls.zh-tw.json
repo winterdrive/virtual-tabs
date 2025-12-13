@@ -8,6 +8,7 @@
     "command.renameGroup.title": "重命名群組",
     "command.duplicateGroup.title": "複製群組",
     "command.duplicateBuiltInGroup.title": "複製群組（目前已開啟檔案）",
+    "command.addSubGroup.title": "新增子群組",
     "command.refreshBuiltInGroup.title": "重新整理群組",
     "command.autoGroupByExt.title": "自動依副檔名分群",
     "command.addSelectedFilesToGroup.title": "加入選取的檔案到群組",
@@ -34,5 +35,7 @@
     "command.editBookmarkLabel.title": "編輯書籤標籤",
     "command.editBookmarkDescription.title": "編輯書籤描述",
     "command.removeBookmark.title": "移除書籤",
-    "submenu.sortFiles.label": "排序檔案"
+    "submenu.sortFiles.label": "排序檔案",
+    "command.copyGroupContext.title": "複製 AI 上下文",
+    "command.copyGroupPaths.title": "複製檔案路徑清單"
 }

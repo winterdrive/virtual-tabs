@@ -43,5 +43,11 @@
     "bookmark.editDescription": "编辑书签描述",
     "bookmark.descriptionUpdated": "书签描述已更新",
     "bookmark.confirmRemove": "确定要移除书签 '{0}' 吗？",
-    "bookmark.removed": "书签 '{0}' 已移除"
+    "bookmark.removed": "书签 '{0}' 已移除",
+    "progress.generatingContext": "正在生成 AI 上下文...",
+    "message.contextCopied": "AI 上下文已复制到剪贴板！",
+    "message.pathsCopied": "文件路径已复制到剪贴板！",
+    "message.contextTooLargeOpenEditor": "内容过大 ({0}MB)，已在编辑器中打开而非复制。",
+    "error.tooManyFiles": "正在处理 {0} 个文件...",
+    "error.cannotOpenEditor": "无法打开新的编辑器窗口。"
 }

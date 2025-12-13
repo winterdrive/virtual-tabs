@@ -43,5 +43,11 @@
     "bookmark.editDescription": "Edit bookmark description",
     "bookmark.descriptionUpdated": "Bookmark description updated",
     "bookmark.confirmRemove": "Are you sure you want to remove bookmark '{0}'?",
-    "bookmark.removed": "Bookmark '{0}' removed"
+    "bookmark.removed": "Bookmark '{0}' removed",
+    "progress.generatingContext": "Generating AI Context...",
+    "message.contextCopied": "AI Context copied to clipboard!",
+    "message.pathsCopied": "File paths copied to clipboard!",
+    "message.contextTooLargeOpenEditor": "Content is large ({0}MB). Opened in editor instead of copying.",
+    "error.tooManyFiles": "Processing {0} files...",
+    "error.cannotOpenEditor": "Failed to open new editor window."
 }

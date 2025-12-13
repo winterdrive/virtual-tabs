@@ -47,6 +47,10 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         return fileItems;
     }
 
+    getSelection(): vscode.TreeItem[] {
+        return this.treeView ? [...this.treeView.selection] : [];
+    }
+
     private saveGroups() {
         if (this.context) {
             this.context.workspaceState.update('virtualTabs.groups', this.groups);
@@ -57,11 +61,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (this.context) {
             const saved = this.context.workspaceState.get<TempGroup[]>('virtualTabs.groups');
             if (saved && Array.isArray(saved)) {
-                // Migration: Ensure v0.2.0 compatibility
-                // Add empty bookmarks object for groups that don't have one
+                // Migration: Ensure v0.2.0 & v0.3.0 compatibility
+                // 1. Add empty bookmarks object for groups that don't have one
+                // 2. Ensure every group has a unique ID
                 this.groups = saved.map(group => ({
                     ...group,
-                    bookmarks: group.bookmarks || {}
+                    bookmarks: group.bookmarks || {},
+                    id: group.id || Date.now().toString() + Math.random().toString(36).substring(2, 9)
                 }));
             }
         }
@@ -74,7 +80,12 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             .map(tab => (tab.input as any)?.uri as vscode.Uri)
             .filter((uri): uri is vscode.Uri => !!uri)
             .map(uri => uri.toString());
-        this.groups.unshift({ name: I18n.getBuiltInGroupName(), files: openUris, builtIn: true });
+        this.groups.unshift({
+            id: 'builtin_group_id', // Fixed ID for built-in group
+            name: I18n.getBuiltInGroupName(),
+            files: openUris,
+            builtIn: true
+        });
     }
 
     refresh(): void {
@@ -100,15 +111,76 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             idx++;
             name = I18n.getGroupName(undefined, idx);
         }
-        this.groups.push({ name, files: [] });
+        this.groups.push({
+            id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+            name,
+            files: []
+        });
         this.refresh();
     }
 
+    addSubGroup(parentGroupId: string) {
+        // Validation: Parent must exist (unless it's null, but view logic handles that)
+        const parent = this.groups.find(g => g.id === parentGroupId);
+        if (!parent) return;
+
+        // Auto-generate name with prefix
+        let idx = 1;
+        let name = I18n.getGroupName(undefined, idx);
+        // Scoped name check (global check is safer for simplicity)
+        while (this.groups.some(g => g.name === name)) {
+            idx++;
+            name = I18n.getGroupName(undefined, idx);
+        }
+
+        this.groups.push({
+            id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+            name,
+            files: [],
+            parentGroupId: parentGroupId
+        });
+        this.refresh();
+    }
+
+    /**
+     * Remove group by ID (recursive)
+     * Recommended over index-based removal for nested structures
+     */
+    removeGroupById(id: string) {
+        const group = this.groups.find(g => g.id === id);
+        if (!group || group.builtIn) return;
+
+        // 1. Find all descendants recursively
+        const idsToRemove = new Set<string>();
+        const collectIds = (currentId: string) => {
+            idsToRemove.add(currentId);
+            const children = this.groups.filter(g => g.parentGroupId === currentId);
+            for (const child of children) {
+                collectIds(child.id);
+            }
+        };
+        collectIds(id);
+
+        // 2. Filter out all collected IDs
+        this.groups = this.groups.filter(g => !idsToRemove.has(g.id));
+        this.refresh();
+    }
+
+    /**
+     * @deprecated Use removeGroupById instead
+     */
     removeGroup(idx: number) {
         // Cannot remove built-in group
         if (this.groups[idx]?.builtIn) return;
-        this.groups.splice(idx, 1);
-        this.refresh();
+
+        const group = this.groups[idx];
+        if (group && group.id) {
+            this.removeGroupById(group.id);
+        } else {
+            // Fallback for limited cases
+            this.groups.splice(idx, 1);
+            this.refresh();
+        }
     }
 
     addFilesToGroup(groupIdx: number, uris: string[]) {
@@ -358,6 +430,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.groups = this.groups.filter((g, idx) => g.builtIn || !g.auto || idx === groupIdx);
         // Insert auto groups at the original group position
         const newGroups = Object.entries(extMap).map(([ext, files]) => ({
+            id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
             name: I18n.getAutoGroupName(ext),
             files,
             auto: true
@@ -414,6 +487,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             const files = dateGroups.get(dateGroup);
             if (files && files.length > 0) {
                 newGroups.push({
+                    id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
                     name: FileGrouper.getDateGroupLabel(dateGroup, I18n),
                     files,
                     auto: true,
@@ -433,14 +507,35 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     getChildren(element?: vscode.TreeItem): vscode.ProviderResult<vscode.TreeItem[]> {
         if (!element) {
-            // 顯示所有群組，帶入 groupIdx
-            return this.groups.map((g, idx) => new TempFolderItem(g.name, idx, g.builtIn));
+            // Root Level: Show top-level groups (no parentGroupId)
+            return this.groups
+                .map((g, idx) => ({ group: g, idx })) // Map to preserve original index
+                .filter(({ group }) => !group.parentGroupId)
+                .map(({ group, idx }) => new TempFolderItem(group.name, idx, group.id, group.builtIn));
         }
 
-        // 若是群組節點，顯示檔案
+        // Expanded Group Node: Show Sub-groups AND Files
         if (element instanceof TempFolderItem) {
             const group = this.groups[element.groupIdx];
-            if (group && group.files && group.files.length > 0) {
+            // Safety check: index might be stale if groups array shifted, but for now we rely on refresh() keeping it consistent.
+            // Ideally should find group by ID, but that requires O(N) search or Map.
+            // Since we rebuild tree on every refresh, index is generally safe *within* a render cycle.
+
+            if (!group) return [];
+
+            const items: vscode.TreeItem[] = [];
+
+            // 1. Sub-groups
+            const subGroups = this.groups
+                .map((g, idx) => ({ group: g, idx }))
+                .filter(({ group: g }) => g.parentGroupId === element.groupId); // Compare with parent's ID
+
+            items.push(...subGroups.map(({ group: g, idx }) =>
+                new TempFolderItem(g.name, idx, g.id, g.builtIn, true) // Mark as sub-group
+            ));
+
+            // 2. Files
+            if (group.files && group.files.length > 0) {
                 // Apply sorting before rendering
                 const sortedFiles = FileSorter.sortFiles(
                     group.files,
@@ -448,7 +543,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                     group.sortOrder || 'asc'
                 );
 
-                return sortedFiles.map(uriStr => {
+                const fileItems = sortedFiles.map(uriStr => {
                     const uri = vscode.Uri.parse(uriStr);
                     const fileItem = new TempFileItem(uri, element.groupIdx, group.builtIn);
 
@@ -461,7 +556,11 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
 
                     return fileItem;
                 });
+
+                items.push(...fileItems);
             }
+
+            return items;
         }
 
         // 若是檔案節點，顯示書籤 (v0.2.0)

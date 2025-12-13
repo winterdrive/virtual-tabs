@@ -43,5 +43,11 @@
     "bookmark.editDescription": "編輯書籤描述",
     "bookmark.descriptionUpdated": "書籤描述已更新",
     "bookmark.confirmRemove": "確定要移除書籤 '{0}' 嗎？",
-    "bookmark.removed": "書籤 '{0}' 已移除"
+    "bookmark.removed": "書籤 '{0}' 已移除",
+    "progress.generatingContext": "正在產生 AI 上下文...",
+    "message.contextCopied": "AI 上下文已複製到剪貼簿！",
+    "message.pathsCopied": "檔案路徑已複製到剪貼簿！",
+    "message.contextTooLargeOpenEditor": "內容過大 ({0}MB)，已在編輯器中開啟而非複製。",
+    "error.tooManyFiles": "正在處理 {0} 個檔案...",
+    "error.cannotOpenEditor": "無法開啟新的編輯器視窗。"
 }
