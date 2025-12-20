@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
-import { TempGroup, SortCriteria, DateGroup } from './types';
+import * as fs from 'fs';
+import * as path from 'path';
+import { TempGroup, SortCriteria, DateGroup, VTBookmark } from './types';
 import { TempFileItem, TempFolderItem, BookmarkItem } from './treeItems';
 import { I18n } from './i18n';
 import { FileSorter } from './sorting';
@@ -52,25 +54,160 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     private saveGroups() {
+        const filePath = this.getStorageFilePath();
+        if (filePath) {
+            try {
+                const storageGroups = this.toStorageGroups(this.groups);
+                fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
+            } catch (error) {
+                console.error('Failed to save VirtualTabs data file:', error);
+            }
+            return;
+        }
+
         if (this.context) {
             this.context.workspaceState.update('virtualTabs.groups', this.groups);
         }
     }
 
     private loadGroups() {
+        const filePath = this.getStorageFilePath();
+        if (filePath && fs.existsSync(filePath)) {
+            try {
+                const content = fs.readFileSync(filePath, 'utf8');
+                const saved = JSON.parse(content);
+                if (saved && Array.isArray(saved)) {
+                    this.groups = this.fromStorageGroups(this.migrateGroups(saved));
+                    return;
+                }
+            } catch (error) {
+                console.error('Failed to load VirtualTabs data file:', error);
+            }
+        }
+
         if (this.context) {
             const saved = this.context.workspaceState.get<TempGroup[]>('virtualTabs.groups');
             if (saved && Array.isArray(saved)) {
-                // Migration: Ensure v0.2.0 & v0.3.0 compatibility
-                // 1. Add empty bookmarks object for groups that don't have one
-                // 2. Ensure every group has a unique ID
-                this.groups = saved.map(group => ({
-                    ...group,
-                    bookmarks: group.bookmarks || {},
-                    id: group.id || Date.now().toString() + Math.random().toString(36).substring(2, 9)
-                }));
+                this.groups = this.fromStorageGroups(this.migrateGroups(saved));
+                if (filePath) {
+                    try {
+                        const storageGroups = this.toStorageGroups(this.groups);
+                        fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
+                    } catch (error) {
+                        console.error('Failed to migrate VirtualTabs data file:', error);
+                    }
+                }
             }
         }
+    }
+
+    private migrateGroups(saved: TempGroup[]): TempGroup[] {
+        return saved.map(group => ({
+            ...group,
+            bookmarks: group.bookmarks || {},
+            id: group.id || Date.now().toString() + Math.random().toString(36).substring(2, 9)
+        }));
+    }
+
+    private toStorageGroups(groups: TempGroup[]): TempGroup[] {
+        const workspaceRoot = this.getWorkspaceRootPath();
+        if (!workspaceRoot) {
+            return groups;
+        }
+
+        return groups.map(group => ({
+            ...group,
+            files: group.files ? group.files.map(uriStr => this.toRelativePath(uriStr, workspaceRoot)) : group.files,
+            bookmarks: group.bookmarks ? this.toRelativeBookmarks(group.bookmarks, workspaceRoot) : group.bookmarks
+        }));
+    }
+
+    private fromStorageGroups(groups: TempGroup[]): TempGroup[] {
+        const workspaceRoot = this.getWorkspaceRootPath();
+        if (!workspaceRoot) {
+            return groups;
+        }
+
+        return groups.map(group => ({
+            ...group,
+            files: group.files ? group.files.map(pathStr => this.toAbsoluteUri(pathStr, workspaceRoot)) : group.files,
+            bookmarks: group.bookmarks ? this.fromStorageBookmarks(group.bookmarks, workspaceRoot) : group.bookmarks
+        }));
+    }
+
+    private toRelativeBookmarks(bookmarks: Record<string, VTBookmark[]>, workspaceRoot: string): Record<string, VTBookmark[]> {
+        const result: Record<string, VTBookmark[]> = {};
+        for (const [fileUri, items] of Object.entries(bookmarks)) {
+            const key = this.toRelativePath(fileUri, workspaceRoot);
+            result[key] = items;
+        }
+        return result;
+    }
+
+    private fromStorageBookmarks(bookmarks: Record<string, VTBookmark[]>, workspaceRoot: string): Record<string, VTBookmark[]> {
+        const result: Record<string, VTBookmark[]> = {};
+        for (const [storedPath, items] of Object.entries(bookmarks)) {
+            const key = this.toAbsoluteUri(storedPath, workspaceRoot);
+            result[key] = items;
+        }
+        return result;
+    }
+
+    private toRelativePath(value: string, workspaceRoot: string): string {
+        try {
+            if (this.isUriString(value) && !this.isWindowsDrivePath(value)) {
+                const uri = vscode.Uri.parse(value);
+                if (uri.scheme !== 'file') {
+                    return value;
+                }
+                return path.relative(workspaceRoot, uri.fsPath);
+            }
+
+            const absolutePath = path.isAbsolute(value)
+                ? value
+                : path.resolve(workspaceRoot, value);
+            return path.relative(workspaceRoot, absolutePath);
+        } catch (error) {
+            console.error('Failed to convert path to relative:', error);
+            return value;
+        }
+    }
+
+    private toAbsoluteUri(value: string, workspaceRoot: string): string {
+        try {
+            if (this.isUriString(value) && !this.isWindowsDrivePath(value)) {
+                return value;
+            }
+
+            const absolutePath = path.isAbsolute(value)
+                ? value
+                : path.resolve(workspaceRoot, value);
+            return vscode.Uri.file(absolutePath).toString();
+        } catch (error) {
+            console.error('Failed to convert path to file URI:', error);
+            return value;
+        }
+    }
+
+    private isUriString(value: string): boolean {
+        return /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value);
+    }
+
+    private isWindowsDrivePath(value: string): boolean {
+        return /^[a-zA-Z]:[\\/]/.test(value);
+    }
+
+    private getStorageFilePath(): string | undefined {
+        const workspaceRoot = this.getWorkspaceRootPath();
+        if (!workspaceRoot) {
+            return undefined;
+        }
+        return path.join(workspaceRoot, 'virtualTab.json');
+    }
+
+    private getWorkspaceRootPath(): string | undefined {
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+        return workspaceFolder?.uri.fsPath;
     }
 
     private initBuiltInGroup() {

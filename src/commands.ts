@@ -148,7 +148,6 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             value: group.name,
             validateInput: (val) => {
                 if (!val.trim()) return I18n.getMessage('input.groupNameError.empty');
-                if (provider.groups.some((g, i) => g.name === val && i !== item.groupIdx)) return I18n.getMessage('input.groupNameError.duplicate');
                 return null;
             }
         });

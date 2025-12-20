@@ -2,6 +2,18 @@
 
 All notable changes to the "VirtualTabs" extension will be documented in this file.
 
+## [0.3.1] - 2025-12-20
+
+### Changed
+
+- Allow duplicate group names when IDs differ.
+
+### Added
+
+- Persist group/bookmark data to `virtualTab.json` at the workspace root instead of `workspaceState`.
+- Added automatic migration from existing `workspaceState` data when the file is missing.
+- Store file references in `virtualTab.json` as paths relative to the workspace root.
+
 ## [0.3.0] - 2025-12-13
 
 ### Added
