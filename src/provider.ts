@@ -15,6 +15,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     // In-memory group array
     public groups: TempGroup[] = [];
+    private expandedGroupIds: Set<string> = new Set();
     private context?: vscode.ExtensionContext;
     private treeView?: vscode.TreeView<vscode.TreeItem>;
 
@@ -29,6 +30,23 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     // Save TreeView reference for multi-select management
     setTreeView(treeView: vscode.TreeView<vscode.TreeItem>): void {
         this.treeView = treeView;
+    }
+
+    setExpandedGroupIds(ids: string[]): void {
+        this.expandedGroupIds = new Set(ids);
+    }
+
+    updateGroupExpanded(id: string, expanded: boolean): string[] {
+        if (expanded) {
+            this.expandedGroupIds.add(id);
+        } else {
+            this.expandedGroupIds.delete(id);
+        }
+        return Array.from(this.expandedGroupIds);
+    }
+
+    isGroupExpanded(id: string): boolean {
+        return this.expandedGroupIds.has(id);
     }
 
     // Get currently selected file items
@@ -680,7 +698,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             return this.groups
                 .map((g, idx) => ({ group: g, idx })) // Map to preserve original index
                 .filter(({ group }) => !group.parentGroupId)
-                .map(({ group, idx }) => new TempFolderItem(group.name, idx, group.id, group.builtIn));
+                .map(({ group, idx }) => {
+                    const item = new TempFolderItem(group.name, idx, group.id, group.builtIn);
+                    item.collapsibleState = this.isGroupExpanded(group.id)
+                        ? vscode.TreeItemCollapsibleState.Expanded
+                        : vscode.TreeItemCollapsibleState.Collapsed;
+                    return item;
+                });
         }
 
         // Expanded Group Node: Show Sub-groups AND Files
@@ -700,7 +724,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                 .filter(({ group: g }) => g.parentGroupId === element.groupId); // Compare with parent's ID
 
             items.push(...subGroups.map(({ group: g, idx }) =>
-                new TempFolderItem(g.name, idx, g.id, g.builtIn, true) // Mark as sub-group
+                (() => {
+                    const item = new TempFolderItem(g.name, idx, g.id, g.builtIn, true); // Mark as sub-group
+                    item.collapsibleState = this.isGroupExpanded(g.id)
+                        ? vscode.TreeItemCollapsibleState.Expanded
+                        : vscode.TreeItemCollapsibleState.Collapsed;
+                    return item;
+                })()
             ));
 
             // 2. Files

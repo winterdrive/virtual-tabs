@@ -3,6 +3,7 @@ import { TempFoldersProvider } from './provider';
 import { TempFoldersDragAndDropController } from './dragAndDrop';
 import { registerCommands } from './commands';
 import { I18n } from './i18n';
+import { TempFolderItem } from './treeItems';
 
 /**
  * Activate the extension
@@ -24,6 +25,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // Create Provider and DragAndDrop controller
     const provider = new TempFoldersProvider(context);
+    const expandedKey = 'virtualTabs.expandedGroups';
+    const expandedIds = context.workspaceState.get<string[]>(expandedKey, []);
+    provider.setExpandedGroupIds(expandedIds);
     const dragAndDropController = new TempFoldersDragAndDropController(provider);
 
     // Create tree view, enable multi-select
@@ -36,6 +40,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // Pass the tree view to the provider for selection management
     provider.setTreeView(treeView);
+
+    const updateExpandedState = (element: vscode.TreeItem, expanded: boolean) => {
+        if (!(element instanceof TempFolderItem)) {
+            return;
+        }
+        const ids = provider.updateGroupExpanded(element.groupId, expanded);
+        context.workspaceState.update(expandedKey, ids);
+    };
+
+    treeView.onDidExpandElement(e => updateExpandedState(e.element, true));
+    treeView.onDidCollapseElement(e => updateExpandedState(e.element, false));
 
 
     // Refresh the view when it becomes visible

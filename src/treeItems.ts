@@ -12,6 +12,7 @@ export class TempFolderItem extends vscode.TreeItem {
         isSubGroup?: boolean // Indicate if this is a sub-group
     ) {
         super(label, vscode.TreeItemCollapsibleState.Collapsed);
+        this.id = `virtualTabsGroup:${groupId}`;
 
         // Visual distinction: Sub-groups use a different icon
         if (isSubGroup) {
