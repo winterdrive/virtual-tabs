@@ -8,6 +8,157 @@ import { TempGroup } from './types';
 // Global clipboard for VirtualTabs items
 let globalClipboardItems: (TempFileItem | TempFolderItem)[] = [];
 
+type FileCommandTarget = TempFileItem | vscode.Uri | { resourceUri?: vscode.Uri } | undefined;
+type ShellKind = 'powershell' | 'cmd' | 'posix' | 'other';
+
+let execTerminal: vscode.Terminal | undefined;
+
+function getFileUri(target: FileCommandTarget): vscode.Uri | undefined {
+    if (!target) {
+        return undefined;
+    }
+    if (target instanceof vscode.Uri) {
+        return target;
+    }
+    if (target instanceof TempFileItem) {
+        return target.uri;
+    }
+    if (typeof target === 'object' && target && 'resourceUri' in target && target.resourceUri instanceof vscode.Uri) {
+        return target.resourceUri;
+    }
+    return undefined;
+}
+
+function isExecutableExtension(uri: vscode.Uri): boolean {
+    const path = require('path');
+    const ext = path.extname(uri.fsPath).toLowerCase();
+    return ext === '.bat' || ext === '.exe';
+}
+
+function getExecutionCwd(uri: vscode.Uri): string {
+    const folder = vscode.workspace.getWorkspaceFolder(uri);
+    if (folder) {
+        return folder.uri.fsPath;
+    }
+    const firstFolder = vscode.workspace.workspaceFolders?.[0];
+    if (firstFolder) {
+        return firstFolder.uri.fsPath;
+    }
+    const path = require('path');
+    return path.dirname(uri.fsPath);
+}
+
+function normalizeShellKind(shellId: string): ShellKind {
+    switch (shellId) {
+        case 'pwsh':
+        case 'powershell':
+            return 'powershell';
+        case 'cmd':
+            return 'cmd';
+        case 'bash':
+        case 'sh':
+        case 'zsh':
+        case 'fish':
+        case 'gitbash':
+        case 'ksh':
+        case 'csh':
+        case 'wsl':
+            return 'posix';
+        default:
+            return 'other';
+    }
+}
+
+function detectShellKindFromPath(shellPath?: string): ShellKind {
+    if (!shellPath) {
+        return 'other';
+    }
+    const path = require('path');
+    const name = path.basename(shellPath).toLowerCase();
+    if (name.includes('pwsh') || name.includes('powershell')) {
+        return 'powershell';
+    }
+    if (name === 'cmd.exe' || name === 'cmd') {
+        return 'cmd';
+    }
+    if (name.includes('bash') || name.includes('zsh') || name.includes('sh') || name.includes('fish')) {
+        return 'posix';
+    }
+    return 'other';
+}
+
+function getShellKind(terminal?: vscode.Terminal): ShellKind {
+    if (terminal?.state?.shell) {
+        return normalizeShellKind(terminal.state.shell);
+    }
+    return detectShellKindFromPath(vscode.env.shell);
+}
+
+function quoteCmd(value: string): string {
+    return `"${value.replace(/"/g, '""')}"`;
+}
+
+function quotePowerShell(value: string): string {
+    return `'${value.replace(/'/g, "''")}'`;
+}
+
+function quotePosix(value: string): string {
+    if (!value) {
+        return "''";
+    }
+    return `'${value.replace(/'/g, "'\\''")}'`;
+}
+
+function buildExecutionCommand(filePath: string, cwd: string, shellKind: ShellKind): string {
+    switch (shellKind) {
+        case 'cmd':
+            return `cd /d ${quoteCmd(cwd)} & ${quoteCmd(filePath)}`;
+        case 'powershell':
+            return `Set-Location -Path ${quotePowerShell(cwd)}; & ${quotePowerShell(filePath)}`;
+        case 'posix':
+            return `cd ${quotePosix(cwd)}; ${quotePosix(filePath)}`;
+        default:
+            return `cd ${quotePosix(cwd)}; ${quotePosix(filePath)}`;
+    }
+}
+
+function getExecTerminal(cwd: string): vscode.Terminal {
+    if (execTerminal) {
+        return execTerminal;
+    }
+    execTerminal = vscode.window.createTerminal({
+        name: 'Virtual Tabs Run',
+        cwd
+    });
+    return execTerminal;
+}
+
+async function runFileInTerminal(uri: vscode.Uri): Promise<void> {
+    const cwd = getExecutionCwd(uri);
+    const terminal = getExecTerminal(cwd);
+    const shellKind = getShellKind(terminal);
+    const commandLine = buildExecutionCommand(uri.fsPath, cwd, shellKind);
+
+    terminal.show(true);
+    if (terminal.shellIntegration) {
+        terminal.shellIntegration.executeCommand(commandLine);
+    } else {
+        terminal.sendText(commandLine, true);
+    }
+}
+
+async function openFileInEditor(uri: vscode.Uri): Promise<void> {
+    await vscode.commands.executeCommand('vscode.open', uri);
+}
+
+async function openFileDefault(uri: vscode.Uri): Promise<void> {
+    if (isExecutableExtension(uri)) {
+        await runFileInTerminal(uri);
+        return;
+    }
+    await openFileInEditor(uri);
+}
+
 /**
  * Get all files from a group and its child groups (recursive)
  */
@@ -32,6 +183,30 @@ function getAllFilesInGroupRecursive(groups: TempGroup[], groupId: string): stri
 
 // VirtualTabs command registration
 export function registerCommands(context: vscode.ExtensionContext, provider: TempFoldersProvider): void {
+    // Default file open behavior for tree view (open or execute)
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.openFile', async (target?: FileCommandTarget) => {
+        const uri = getFileUri(target);
+        if (!uri) {
+            return;
+        }
+        await openFileDefault(uri);
+    }));
+
+    // Edit file in editor (e.g. for .bat)
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.editFile', async (target?: FileCommandTarget) => {
+        const uri = getFileUri(target);
+        if (!uri) {
+            return;
+        }
+        await openFileInEditor(uri);
+    }));
+
+    context.subscriptions.push(vscode.window.onDidCloseTerminal((terminal) => {
+        if (terminal === execTerminal) {
+            execTerminal = undefined;
+        }
+    }));
+
     // Register add group command
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.addGroup', () => {
         provider.addGroup();
@@ -41,6 +216,18 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
     context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.addSubGroup', (item: TempFolderItem) => {
         if (item && item.groupId) {
             provider.addSubGroup(item.groupId);
+        }
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.moveGroupUp', (item: TempFolderItem) => {
+        if (item && item.groupId) {
+            provider.moveGroup(item.groupId, 'up');
+        }
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.moveGroupDown', (item: TempFolderItem) => {
+        if (item && item.groupId) {
+            provider.moveGroup(item.groupId, 'down');
         }
     }));
 
@@ -148,7 +335,6 @@ export function registerCommands(context: vscode.ExtensionContext, provider: Tem
             value: group.name,
             validateInput: (val) => {
                 if (!val.trim()) return I18n.getMessage('input.groupNameError.empty');
-                if (provider.groups.some((g, i) => g.name === val && i !== item.groupIdx)) return I18n.getMessage('input.groupNameError.duplicate');
                 return null;
             }
         });

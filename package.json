@@ -2,7 +2,7 @@
     "name": "virtual-tabs",
     "displayName": "%extension.displayName%",
     "description": "%extension.description%",
-    "version": "0.3.0",
+    "version": "0.3.2",
     "publisher": "winterdrive",
     "icon": "assets/virtualtabs_icon_128.png",
     "categories": [
@@ -92,6 +92,14 @@
                 "title": "%command.addSubGroup.title%"
             },
             {
+                "command": "virtualTabs.moveGroupUp",
+                "title": "%command.moveGroupUp.title%"
+            },
+            {
+                "command": "virtualTabs.moveGroupDown",
+                "title": "%command.moveGroupDown.title%"
+            },
+            {
                 "command": "virtualTabs.refreshBuiltInGroup",
                 "title": "%command.refreshBuiltInGroup.title%",
                 "icon": "$(refresh)"
@@ -119,6 +127,10 @@
             {
                 "command": "virtualTabs.closeSelectedFiles",
                 "title": "%command.closeSelectedFiles.title%"
+            },
+            {
+                "command": "virtualTabs.editFile",
+                "title": "%command.editFile.title%"
             },
             {
                 "command": "virtualTabs.removeSelectedFilesFromGroup",
@@ -268,6 +280,16 @@
                     "group": "1_basic@4"
                 },
                 {
+                    "command": "virtualTabs.moveGroupUp",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@0"
+                },
+                {
+                    "command": "virtualTabs.moveGroupDown",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@0.1"
+                },
+                {
                     "command": "virtualTabs.openAllFiles",
                     "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
                     "group": "2_files@1"
@@ -354,63 +376,73 @@
                 },
                 {
                     "command": "virtualTabs.openSelectedFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/ && selectedCount > 1",
                     "group": "1_open@1"
                 },
                 {
                     "command": "virtualTabs.closeSelectedFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/ && selectedCount > 1",
                     "group": "1_open@2"
                 },
                 {
                     "command": "virtualTabs.paste",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/",
                     "group": "2_edit@1"
                 },
                 {
+                    "command": "virtualTabs.editFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustomBat",
+                    "group": "2_edit@0"
+                },
+                {
                     "submenu": "virtualTabs.copyMenu.fileCustom",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/",
                     "group": "3_copy@1"
                 },
                 {
                     "command": "revealFileInOS",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/",
                     "group": "4_system@1"
                 },
                 {
                     "command": "virtualTabs.removeFileFromGroup",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/",
                     "group": "inline@1"
                 },
                 {
                     "command": "virtualTabs.removeSelectedFilesFromGroup",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom && selectedCount > 1",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/ && selectedCount > 1",
                     "group": "9_delete@1"
                 },
                 {
                     "command": "deleteFile",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustom",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileCustom/",
                     "group": "9_delete@2"
                 },
                 {
                     "command": "virtualTabs.openSelectedFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileBuiltIn/ && selectedCount > 1",
                     "group": "1_open@1"
                 },
                 {
                     "command": "virtualTabs.closeSelectedFiles",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn && selectedCount > 1",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileBuiltIn/ && selectedCount > 1",
                     "group": "1_open@2"
                 },
                 {
                     "submenu": "virtualTabs.copyMenu.fileBuiltIn",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileBuiltIn/",
                     "group": "3_copy@1"
                 },
                 {
                     "command": "revealFileInOS",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltIn",
+                    "when": "view == virtualTabsView && viewItem =~ /virtualTabsFileBuiltIn/",
                     "group": "4_system@1"
+                },
+                {
+                    "command": "virtualTabs.editFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltInBat",
+                    "group": "2_edit@0"
                 },
                 {
                     "command": "virtualTabs.editBookmarkLabel",

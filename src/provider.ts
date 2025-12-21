@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
-import { TempGroup, SortCriteria, DateGroup } from './types';
+import * as fs from 'fs';
+import * as path from 'path';
+import { TempGroup, SortCriteria, DateGroup, VTBookmark } from './types';
 import { TempFileItem, TempFolderItem, BookmarkItem } from './treeItems';
 import { I18n } from './i18n';
 import { FileSorter } from './sorting';
@@ -13,6 +15,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     // In-memory group array
     public groups: TempGroup[] = [];
+    private expandedGroupIds: Set<string> = new Set();
     private context?: vscode.ExtensionContext;
     private treeView?: vscode.TreeView<vscode.TreeItem>;
 
@@ -27,6 +30,23 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     // Save TreeView reference for multi-select management
     setTreeView(treeView: vscode.TreeView<vscode.TreeItem>): void {
         this.treeView = treeView;
+    }
+
+    setExpandedGroupIds(ids: string[]): void {
+        this.expandedGroupIds = new Set(ids);
+    }
+
+    updateGroupExpanded(id: string, expanded: boolean): string[] {
+        if (expanded) {
+            this.expandedGroupIds.add(id);
+        } else {
+            this.expandedGroupIds.delete(id);
+        }
+        return Array.from(this.expandedGroupIds);
+    }
+
+    isGroupExpanded(id: string): boolean {
+        return this.expandedGroupIds.has(id);
     }
 
     // Get currently selected file items
@@ -52,25 +72,160 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     private saveGroups() {
+        const filePath = this.getStorageFilePath();
+        if (filePath) {
+            try {
+                const storageGroups = this.toStorageGroups(this.groups);
+                fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
+            } catch (error) {
+                console.error('Failed to save VirtualTabs data file:', error);
+            }
+            return;
+        }
+
         if (this.context) {
             this.context.workspaceState.update('virtualTabs.groups', this.groups);
         }
     }
 
     private loadGroups() {
+        const filePath = this.getStorageFilePath();
+        if (filePath && fs.existsSync(filePath)) {
+            try {
+                const content = fs.readFileSync(filePath, 'utf8');
+                const saved = JSON.parse(content);
+                if (saved && Array.isArray(saved)) {
+                    this.groups = this.fromStorageGroups(this.migrateGroups(saved));
+                    return;
+                }
+            } catch (error) {
+                console.error('Failed to load VirtualTabs data file:', error);
+            }
+        }
+
         if (this.context) {
             const saved = this.context.workspaceState.get<TempGroup[]>('virtualTabs.groups');
             if (saved && Array.isArray(saved)) {
-                // Migration: Ensure v0.2.0 & v0.3.0 compatibility
-                // 1. Add empty bookmarks object for groups that don't have one
-                // 2. Ensure every group has a unique ID
-                this.groups = saved.map(group => ({
-                    ...group,
-                    bookmarks: group.bookmarks || {},
-                    id: group.id || Date.now().toString() + Math.random().toString(36).substring(2, 9)
-                }));
+                this.groups = this.fromStorageGroups(this.migrateGroups(saved));
+                if (filePath) {
+                    try {
+                        const storageGroups = this.toStorageGroups(this.groups);
+                        fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
+                    } catch (error) {
+                        console.error('Failed to migrate VirtualTabs data file:', error);
+                    }
+                }
             }
         }
+    }
+
+    private migrateGroups(saved: TempGroup[]): TempGroup[] {
+        return saved.map(group => ({
+            ...group,
+            bookmarks: group.bookmarks || {},
+            id: group.id || Date.now().toString() + Math.random().toString(36).substring(2, 9)
+        }));
+    }
+
+    private toStorageGroups(groups: TempGroup[]): TempGroup[] {
+        const workspaceRoot = this.getWorkspaceRootPath();
+        if (!workspaceRoot) {
+            return groups;
+        }
+
+        return groups.map(group => ({
+            ...group,
+            files: group.files ? group.files.map(uriStr => this.toRelativePath(uriStr, workspaceRoot)) : group.files,
+            bookmarks: group.bookmarks ? this.toRelativeBookmarks(group.bookmarks, workspaceRoot) : group.bookmarks
+        }));
+    }
+
+    private fromStorageGroups(groups: TempGroup[]): TempGroup[] {
+        const workspaceRoot = this.getWorkspaceRootPath();
+        if (!workspaceRoot) {
+            return groups;
+        }
+
+        return groups.map(group => ({
+            ...group,
+            files: group.files ? group.files.map(pathStr => this.toAbsoluteUri(pathStr, workspaceRoot)) : group.files,
+            bookmarks: group.bookmarks ? this.fromStorageBookmarks(group.bookmarks, workspaceRoot) : group.bookmarks
+        }));
+    }
+
+    private toRelativeBookmarks(bookmarks: Record<string, VTBookmark[]>, workspaceRoot: string): Record<string, VTBookmark[]> {
+        const result: Record<string, VTBookmark[]> = {};
+        for (const [fileUri, items] of Object.entries(bookmarks)) {
+            const key = this.toRelativePath(fileUri, workspaceRoot);
+            result[key] = items;
+        }
+        return result;
+    }
+
+    private fromStorageBookmarks(bookmarks: Record<string, VTBookmark[]>, workspaceRoot: string): Record<string, VTBookmark[]> {
+        const result: Record<string, VTBookmark[]> = {};
+        for (const [storedPath, items] of Object.entries(bookmarks)) {
+            const key = this.toAbsoluteUri(storedPath, workspaceRoot);
+            result[key] = items;
+        }
+        return result;
+    }
+
+    private toRelativePath(value: string, workspaceRoot: string): string {
+        try {
+            if (this.isUriString(value) && !this.isWindowsDrivePath(value)) {
+                const uri = vscode.Uri.parse(value);
+                if (uri.scheme !== 'file') {
+                    return value;
+                }
+                return path.relative(workspaceRoot, uri.fsPath);
+            }
+
+            const absolutePath = path.isAbsolute(value)
+                ? value
+                : path.resolve(workspaceRoot, value);
+            return path.relative(workspaceRoot, absolutePath);
+        } catch (error) {
+            console.error('Failed to convert path to relative:', error);
+            return value;
+        }
+    }
+
+    private toAbsoluteUri(value: string, workspaceRoot: string): string {
+        try {
+            if (this.isUriString(value) && !this.isWindowsDrivePath(value)) {
+                return value;
+            }
+
+            const absolutePath = path.isAbsolute(value)
+                ? value
+                : path.resolve(workspaceRoot, value);
+            return vscode.Uri.file(absolutePath).toString();
+        } catch (error) {
+            console.error('Failed to convert path to file URI:', error);
+            return value;
+        }
+    }
+
+    private isUriString(value: string): boolean {
+        return /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value);
+    }
+
+    private isWindowsDrivePath(value: string): boolean {
+        return /^[a-zA-Z]:[\\/]/.test(value);
+    }
+
+    private getStorageFilePath(): string | undefined {
+        const workspaceRoot = this.getWorkspaceRootPath();
+        if (!workspaceRoot) {
+            return undefined;
+        }
+        return path.join(workspaceRoot, 'virtualTab.json');
+    }
+
+    private getWorkspaceRootPath(): string | undefined {
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+        return workspaceFolder?.uri.fsPath;
     }
 
     private initBuiltInGroup() {
@@ -139,6 +294,38 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             files: [],
             parentGroupId: parentGroupId
         });
+        this.refresh();
+    }
+
+    moveGroup(groupId: string, direction: 'up' | 'down') {
+        const currentIndex = this.groups.findIndex(group => group.id === groupId);
+        if (currentIndex < 0) return;
+
+        const group = this.groups[currentIndex];
+        if (!group || group.builtIn) return;
+
+        const parentId = group.parentGroupId ?? null;
+        const siblings = this.groups
+            .map((g, idx) => ({ group: g, idx }))
+            .filter(({ group: g }) => (g.parentGroupId ?? null) === parentId);
+
+        const currentPosition = siblings.findIndex(sibling => sibling.idx === currentIndex);
+        if (currentPosition < 0) return;
+
+        const offset = direction === 'up' ? -1 : 1;
+        const targetPosition = currentPosition + offset;
+        if (targetPosition < 0 || targetPosition >= siblings.length) return;
+
+        const target = siblings[targetPosition].group;
+        if (target.builtIn) return;
+
+        let insertIndex = siblings[targetPosition].idx + (direction === 'down' ? 1 : 0);
+        if (insertIndex > currentIndex) {
+            insertIndex -= 1;
+        }
+
+        this.groups.splice(currentIndex, 1);
+        this.groups.splice(insertIndex, 0, group);
         this.refresh();
     }
 
@@ -511,7 +698,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
             return this.groups
                 .map((g, idx) => ({ group: g, idx })) // Map to preserve original index
                 .filter(({ group }) => !group.parentGroupId)
-                .map(({ group, idx }) => new TempFolderItem(group.name, idx, group.id, group.builtIn));
+                .map(({ group, idx }) => {
+                    const item = new TempFolderItem(group.name, idx, group.id, group.builtIn);
+                    item.collapsibleState = this.isGroupExpanded(group.id)
+                        ? vscode.TreeItemCollapsibleState.Expanded
+                        : vscode.TreeItemCollapsibleState.Collapsed;
+                    return item;
+                });
         }
 
         // Expanded Group Node: Show Sub-groups AND Files
@@ -531,7 +724,13 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                 .filter(({ group: g }) => g.parentGroupId === element.groupId); // Compare with parent's ID
 
             items.push(...subGroups.map(({ group: g, idx }) =>
-                new TempFolderItem(g.name, idx, g.id, g.builtIn, true) // Mark as sub-group
+                (() => {
+                    const item = new TempFolderItem(g.name, idx, g.id, g.builtIn, true); // Mark as sub-group
+                    item.collapsibleState = this.isGroupExpanded(g.id)
+                        ? vscode.TreeItemCollapsibleState.Expanded
+                        : vscode.TreeItemCollapsibleState.Collapsed;
+                    return item;
+                })()
             ));
 
             // 2. Files

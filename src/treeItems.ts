@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { VTBookmark } from './types';
 
 // Temporary folder TreeItem
@@ -11,6 +12,7 @@ export class TempFolderItem extends vscode.TreeItem {
         isSubGroup?: boolean // Indicate if this is a sub-group
     ) {
         super(label, vscode.TreeItemCollapsibleState.Collapsed);
+        this.id = `virtualTabsGroup:${groupId}`;
 
         // Visual distinction: Sub-groups use a different icon
         if (isSubGroup) {
@@ -30,16 +32,22 @@ export class TempFileItem extends vscode.TreeItem {
     constructor(public readonly uri: vscode.Uri, public readonly groupIdx: number, isBuiltInGroup?: boolean) {
         super(uri, vscode.TreeItemCollapsibleState.None);
         this.resourceUri = uri;
-        // Set command to open file on click
+        // Set command to open or execute file on click
         this.command = {
-            command: 'vscode.open',
+            command: 'virtualTabs.openFile',
             title: 'Open File',
             arguments: [uri]
         };
         this.iconPath = vscode.ThemeIcon.File;
         this.tooltip = uri.fsPath;
-        // Set different contextValue based on group type
-        this.contextValue = isBuiltInGroup ? 'virtualTabsFileBuiltIn' : 'virtualTabsFileCustom';
+        const ext = path.extname(uri.fsPath).toLowerCase();
+        const isBat = ext === '.bat';
+        // Set different contextValue based on group type and extension
+        if (isBuiltInGroup) {
+            this.contextValue = isBat ? 'virtualTabsFileBuiltInBat' : 'virtualTabsFileBuiltIn';
+        } else {
+            this.contextValue = isBat ? 'virtualTabsFileCustomBat' : 'virtualTabsFileCustom';
+        }
     }
 }
 
