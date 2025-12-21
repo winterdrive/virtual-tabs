@@ -37,6 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Pass the tree view to the provider for selection management
     provider.setTreeView(treeView);
 
+
     // Refresh the view when it becomes visible
     treeView.onDidChangeVisibility(e => {
         if (e.visible) {

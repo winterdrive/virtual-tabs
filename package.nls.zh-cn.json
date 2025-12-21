@@ -18,6 +18,7 @@
     "command.closeAllFiles.title": "关闭群组中的所有文件",
     "command.openSelectedFiles.title": "打开选中的文件",
     "command.closeSelectedFiles.title": "关闭选中的文件",
+    "command.editFile.title": "编辑",
     "command.removeSelectedFilesFromGroup.title": "从群组中移除选中的文件",
     "command.deleteFile.title": "删除文件",
     "command.copyFilePath.title": "复制绝对路径",
