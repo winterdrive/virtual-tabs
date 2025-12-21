@@ -129,8 +129,9 @@
                 "title": "%command.closeSelectedFiles.title%"
             },
             {
-                "command": "virtualTabs.editFile",
-                "title": "%command.editFile.title%"
+                "command": "virtualTabs.runFile",
+                "title": "%command.runFile.title%",
+                "icon": "$(run)"
             },
             {
                 "command": "virtualTabs.removeSelectedFilesFromGroup",
@@ -390,9 +391,9 @@
                     "group": "2_edit@1"
                 },
                 {
-                    "command": "virtualTabs.editFile",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustomBat",
-                    "group": "2_edit@0"
+                    "command": "virtualTabs.runFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileCustomExec",
+                    "group": "inline@0"
                 },
                 {
                     "submenu": "virtualTabs.copyMenu.fileCustom",
@@ -440,9 +441,9 @@
                     "group": "4_system@1"
                 },
                 {
-                    "command": "virtualTabs.editFile",
-                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltInBat",
-                    "group": "2_edit@0"
+                    "command": "virtualTabs.runFile",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsFileBuiltInExec",
+                    "group": "inline@0"
                 },
                 {
                     "command": "virtualTabs.editBookmarkLabel",

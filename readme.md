@@ -22,23 +22,32 @@ VirtualTabs is a **logical file organizer** for VS Code that lets you group rela
 
 ## ✨ Key Features
 
-### 🆕 New in v0.3.0
-
-- **📂 Sub-Groups & Nesting** — Organize groups within groups for better hierarchy
-- **🤖 AI Context Export** — One-click copy all files as LLM-ready context
-- **📋 Smart Copy Menu** — Unified copy options for files and groups
-- **📁 Directory Drag & Drop** — Drag folders to add all files recursively
-- **✂️ Copy/Paste/Delete** — Full clipboard operations within VirtualTabs
-
-### Core Features
+### Core Capabilities
 
 - **📁 Cross-Directory Grouping** — Organize files from anywhere, breaking free from folder constraints
-- **🔖 Task-Oriented Bookmarks** — Mark specific lines of code within your groups for quick navigation
-- **📊 Smart Auto-Grouping** — Organize by extension, modification date, or custom logic
-- **🎨 Flexible Sorting** — Sort by name, path, extension, or modified time within each group
-- **🌍 Multilingual** — Full support for English, Traditional Chinese, and Simplified Chinese
+- **🔖 Task-Oriented Bookmarks** — Mark specific lines of code within your groups for quick navigation `(v0.2.0)`
+- **📂 Sub-Groups & Nesting** — Create hierarchical structures for better organization `(v0.3.0)`
+- **🤖 AI Context Export** — One-click copy all files as LLM-ready context `(v0.3.0)`
+- **▶️ Script Execution** — Inline run button for `.bat` and `.exe` files `(v0.3.2)`
+- **💾 Portable Config** — Settings saved to `.vscode/virtualTab.json` for team sharing `(v0.3.2)`
+
+### ⚡ Workflow Boosters
+
+- **📋 Smart Copy Menu** — Unified copy options for files and groups `(v0.3.0)`
+- **📁 Directory Drag & Drop** — Drag folders to add all files recursively `(v0.3.0)`
+- **✂️ Full Clipboard Operations** — Cut/Copy/Paste support for files and groups `(v0.3.0)`
+- **⇵ Group Reordering** — Easily move groups up and down via context menu `(v0.3.2)`
+- **📊 Smart Organization** — Auto-group by extension, date, or sort by various criteria
 
 ---
+
+## 🚀 What's New in v0.3.2
+
+![v0.3.2 Features](assets/feature_032_preview.png)
+
+- **Run Scripts Directly**: `.bat` and `.exe` files now have a dedicated inline "Run" button.
+- **Organize Better**: Reorder your groups via the context menu to keep priorities sorted.
+- **Share with Team**: Your groups are now saved in `.vscode/virtualTab.json`, making it easy to commit and share configuration with your team.
 
 ## 🆕 What's New in v0.3.0
 
@@ -309,7 +318,7 @@ It reads all files in the group (including sub-groups), formats them as markdown
 
 ### Q4: Can I share my groups with my team?
 
-Currently, groups are saved in `workspaceState` (local to your machine). We're exploring workspace-level persistence in future versions.
+Currently, groups are saved in `workspaceState` (local) or `.vscode/virtualTab.json` (shareable). v0.3.2 introduced support for `.vscode` storage!
 
 ### Q5: Do bookmarks work across file renames?
 
@@ -362,7 +371,14 @@ Together, they create the ultimate AI-coding workflow.
 
 ## 📅 Changelog
 
-### ✅ v0.3.0 (Latest)
+### ✅ v0.3.2 (Latest)
+
+- ✅ Inline Run button for scripts (.bat/.exe)
+- ✅ Group Reordering (Move Up/Down)
+- ✅ Storage moved to `.vscode/virtualTab.json`
+- ✅ Expanded state persistence
+
+### ✅ v0.3.0
 
 - ✅ Sub-Groups & Nested Structure
 - ✅ AI Context Export ("Copy Context for AI")

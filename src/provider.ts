@@ -19,6 +19,9 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     private context?: vscode.ExtensionContext;
     private treeView?: vscode.TreeView<vscode.TreeItem>;
 
+    // Debounce timer for saving groups to reduce disk I/O
+    private saveDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
     constructor(context?: vscode.ExtensionContext) {
         this.context = context;
         this.loadGroups();
@@ -72,19 +75,33 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     private saveGroups() {
+        // Debounce: Clear any pending save and schedule a new one
+        if (this.saveDebounceTimer) {
+            clearTimeout(this.saveDebounceTimer);
+        }
+        this.saveDebounceTimer = setTimeout(() => {
+            this.saveGroupsImmediate();
+        }, 500);
+    }
+
+    private saveGroupsImmediate() {
         const filePath = this.getStorageFilePath();
-        if (filePath) {
-            try {
-                const storageGroups = this.toStorageGroups(this.groups);
-                fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
-            } catch (error) {
-                console.error('Failed to save VirtualTabs data file:', error);
-            }
+        if (!filePath) {
+            console.warn('Cannot save VirtualTabs data: workspace root not found');
             return;
         }
 
-        if (this.context) {
-            this.context.workspaceState.update('virtualTabs.groups', this.groups);
+        try {
+            // Ensure .vscode directory exists
+            const dir = path.dirname(filePath);
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+
+            const storageGroups = this.toStorageGroups(this.groups);
+            fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
+        } catch (error) {
+            console.error('Failed to save VirtualTabs data file:', error);
         }
     }
 
@@ -96,25 +113,9 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
                 const saved = JSON.parse(content);
                 if (saved && Array.isArray(saved)) {
                     this.groups = this.fromStorageGroups(this.migrateGroups(saved));
-                    return;
                 }
             } catch (error) {
                 console.error('Failed to load VirtualTabs data file:', error);
-            }
-        }
-
-        if (this.context) {
-            const saved = this.context.workspaceState.get<TempGroup[]>('virtualTabs.groups');
-            if (saved && Array.isArray(saved)) {
-                this.groups = this.fromStorageGroups(this.migrateGroups(saved));
-                if (filePath) {
-                    try {
-                        const storageGroups = this.toStorageGroups(this.groups);
-                        fs.writeFileSync(filePath, JSON.stringify(storageGroups, null, 2), 'utf8');
-                    } catch (error) {
-                        console.error('Failed to migrate VirtualTabs data file:', error);
-                    }
-                }
             }
         }
     }
@@ -220,7 +221,7 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         if (!workspaceRoot) {
             return undefined;
         }
-        return path.join(workspaceRoot, 'virtualTab.json');
+        return path.join(workspaceRoot, '.vscode', 'virtualTab.json');
     }
 
     private getWorkspaceRootPath(): string | undefined {

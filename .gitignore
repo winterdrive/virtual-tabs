@@ -4,6 +4,3 @@
 /package-lock.json
 /.idea
 *.vsix
-pdp_Convter/pdp_to_virtualtab.py
-pdp_Convter/README_pdp_converter.md
-virtualTab.json

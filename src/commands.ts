@@ -94,6 +94,35 @@ function getShellKind(terminal?: vscode.Terminal): ShellKind {
     return detectShellKindFromPath(vscode.env.shell);
 }
 
+/**
+ * Shell Command Quoting Functions
+ * 
+ * IMPLEMENTATION NOTE:
+ * These functions manually construct shell command strings with proper quoting for different shells.
+ * 
+ * VS Code Native Approach:
+ * - VS Code's built-in run buttons use `vscode.ShellExecution(command, args[])` 
+ * - Arguments are passed as an array, avoiding string concatenation
+ * - VS Code handles shell-specific quoting automatically via `vscode.ShellQuotedString`
+ * 
+ * Our Current Implementation:
+ * - Manual string construction with shell-specific quoting rules
+ * - Simpler and more direct for our use case (executing local workspace files)
+ * - Adequate for paths within user's trusted workspace
+ * 
+ * Risk Assessment:
+ * - Security risk: LOW (user can only execute files they already control in their workspace)
+ * - Maintenance risk: MEDIUM (manual quoting requires shell-specific knowledge)
+ * 
+ * Future Consideration:
+ * If we need to support user-provided arguments (not just file paths), consider migrating to:
+ * ```typescript
+ * const execution = new vscode.ShellExecution(filePath, [], { cwd });
+ * const terminal = vscode.window.createTerminal({ shellPath, shellArgs });
+ * terminal.sendText(execution.commandLine);
+ * ```
+ */
+
 function quoteCmd(value: string): string {
     return `"${value.replace(/"/g, '""')}"`;
 }
@@ -183,22 +212,13 @@ function getAllFilesInGroupRecursive(groups: TempGroup[], groupId: string): stri
 
 // VirtualTabs command registration
 export function registerCommands(context: vscode.ExtensionContext, provider: TempFoldersProvider): void {
-    // Default file open behavior for tree view (open or execute)
-    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.openFile', async (target?: FileCommandTarget) => {
+    // Run executable file in terminal (explicit action via inline button)
+    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.runFile', async (target?: FileCommandTarget) => {
         const uri = getFileUri(target);
         if (!uri) {
             return;
         }
-        await openFileDefault(uri);
-    }));
-
-    // Edit file in editor (e.g. for .bat)
-    context.subscriptions.push(vscode.commands.registerCommand('virtualTabs.editFile', async (target?: FileCommandTarget) => {
-        const uri = getFileUri(target);
-        if (!uri) {
-            return;
-        }
-        await openFileInEditor(uri);
+        await runFileInTerminal(uri);
     }));
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((terminal) => {

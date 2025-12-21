@@ -32,22 +32,25 @@ export class TempFileItem extends vscode.TreeItem {
     constructor(public readonly uri: vscode.Uri, public readonly groupIdx: number, isBuiltInGroup?: boolean) {
         super(uri, vscode.TreeItemCollapsibleState.None);
         this.resourceUri = uri;
-        // Set command to open or execute file on click
+
+        const ext = path.extname(uri.fsPath).toLowerCase();
+        const isExecutable = ext === '.bat' || ext === '.exe';
+
+        // Click always opens in editor (consistent behavior for all files)
         this.command = {
-            command: 'virtualTabs.openFile',
+            command: 'vscode.open',
             title: 'Open File',
             arguments: [uri]
         };
         this.iconPath = vscode.ThemeIcon.File;
         this.tooltip = uri.fsPath;
-        const ext = path.extname(uri.fsPath).toLowerCase();
-        const isBat = ext === '.bat';
-        // Set different contextValue based on group type and extension
-        if (isBuiltInGroup) {
-            this.contextValue = isBat ? 'virtualTabsFileBuiltInBat' : 'virtualTabsFileBuiltIn';
-        } else {
-            this.contextValue = isBat ? 'virtualTabsFileCustomBat' : 'virtualTabsFileCustom';
-        }
+
+        // Use base contextValue with capability suffix for better extensibility
+        // This allows VS Code's 'when' clause to match patterns like:
+        // - viewItem =~ /virtualTabsFile.*Exec/ for any executable
+        // - viewItem == virtualTabsFileCustom for exact match
+        const baseContext = isBuiltInGroup ? 'virtualTabsFileBuiltIn' : 'virtualTabsFileCustom';
+        this.contextValue = isExecutable ? `${baseContext}Exec` : baseContext;
     }
 }
 

@@ -2,17 +2,26 @@
 
 All notable changes to the "VirtualTabs" extension will be documented in this file.
 
-## [0.3.1] - 2025-12-20
+## [0.3.2] - 2025-12-21
 
-### Changed
-
-- Allow duplicate group names when IDs differ.
+> **Special Thanks**: [@jianfulin](https://github.com/jianfulin) for the major contribution! 🎉
 
 ### Added
 
-- Persist group/bookmark data to `virtualTab.json` at the workspace root instead of `workspaceState`.
-- Added automatic migration from existing `workspaceState` data when the file is missing.
+- **Group Reordering**: Move groups up or down via context menu commands.
+- **Executable File Support**: `.bat` and `.exe` files now have an inline "Run" button. Clicking the file itself still opens it in editor for consistency.
+- **Expanded State Persistence**: Remember which groups are expanded/collapsed across VS Code restarts.
+- Persist group/bookmark data to `.vscode/virtualTab.json`.
 - Store file references in `virtualTab.json` as paths relative to the workspace root.
+
+### Changed
+
+- **Storage Location**: Moved `virtualTab.json` from workspace root to `.vscode/virtualTab.json` for cleaner project structure.
+- Allow duplicate group names when IDs differ.
+
+### Fixed
+
+- Improved shell command quoting for cross-platform terminal execution.
 
 ## [0.3.0] - 2025-12-13
 
