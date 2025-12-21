@@ -279,6 +279,38 @@ export class TempFoldersProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.refresh();
     }
 
+    moveGroup(groupId: string, direction: 'up' | 'down') {
+        const currentIndex = this.groups.findIndex(group => group.id === groupId);
+        if (currentIndex < 0) return;
+
+        const group = this.groups[currentIndex];
+        if (!group || group.builtIn) return;
+
+        const parentId = group.parentGroupId ?? null;
+        const siblings = this.groups
+            .map((g, idx) => ({ group: g, idx }))
+            .filter(({ group: g }) => (g.parentGroupId ?? null) === parentId);
+
+        const currentPosition = siblings.findIndex(sibling => sibling.idx === currentIndex);
+        if (currentPosition < 0) return;
+
+        const offset = direction === 'up' ? -1 : 1;
+        const targetPosition = currentPosition + offset;
+        if (targetPosition < 0 || targetPosition >= siblings.length) return;
+
+        const target = siblings[targetPosition].group;
+        if (target.builtIn) return;
+
+        let insertIndex = siblings[targetPosition].idx + (direction === 'down' ? 1 : 0);
+        if (insertIndex > currentIndex) {
+            insertIndex -= 1;
+        }
+
+        this.groups.splice(currentIndex, 1);
+        this.groups.splice(insertIndex, 0, group);
+        this.refresh();
+    }
+
     /**
      * Remove group by ID (recursive)
      * Recommended over index-based removal for nested structures

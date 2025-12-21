@@ -9,6 +9,8 @@
     "command.duplicateGroup.title": "複製群組",
     "command.duplicateBuiltInGroup.title": "複製群組（目前已開啟檔案）",
     "command.addSubGroup.title": "新增子群組",
+    "command.moveGroupUp.title": "位置往上",
+    "command.moveGroupDown.title": "位置往下",
     "command.refreshBuiltInGroup.title": "重新整理群組",
     "command.autoGroupByExt.title": "自動依副檔名分群",
     "command.addSelectedFilesToGroup.title": "加入選取的檔案到群組",

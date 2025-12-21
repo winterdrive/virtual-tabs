@@ -92,6 +92,14 @@
                 "title": "%command.addSubGroup.title%"
             },
             {
+                "command": "virtualTabs.moveGroupUp",
+                "title": "%command.moveGroupUp.title%"
+            },
+            {
+                "command": "virtualTabs.moveGroupDown",
+                "title": "%command.moveGroupDown.title%"
+            },
+            {
                 "command": "virtualTabs.refreshBuiltInGroup",
                 "title": "%command.refreshBuiltInGroup.title%",
                 "icon": "$(refresh)"
@@ -266,6 +274,16 @@
                     "command": "virtualTabs.duplicateGroup",
                     "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
                     "group": "1_basic@4"
+                },
+                {
+                    "command": "virtualTabs.moveGroupUp",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@0"
+                },
+                {
+                    "command": "virtualTabs.moveGroupDown",
+                    "when": "view == virtualTabsView && viewItem == virtualTabsGroup",
+                    "group": "3_organize@0.1"
                 },
                 {
                     "command": "virtualTabs.openAllFiles",
